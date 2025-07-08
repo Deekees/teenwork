@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Available Summer Jobs | TeenWork</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css?family=Poppins:400,600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="logo">TeenWork</a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="jobs.html">Jobs</a></li>
+        <li><a href="courses.html">Courses</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li id="dashboardNav" style="display:none;"><a href="dashboard.html">Dashboard</a></li>
+      </ul>
+      <button class="menu-toggle" id="menuToggle" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="auth-buttons">
+        <button id="loginBtn" class="btn btn-primary" style="margin-right:0.5rem;">Login</button>
+        <button id="signupBtn" class="btn">Sign Up</button>
+        <button id="logoutBtn" class="btn" style="display:none;">Logout</button>
+      </div>
+    </div>
+  </nav>
+  <main class="jobs-main">
+    <div class="container">
+      <section class="cta-section">
+        <div class="cta-container">
+          <h2>Want to boost your skills even more?</h2>
+          <a href="courses.html" class="btn btn-primary">Explore Free Courses</a>
+        </div>
+      </section>
+      <h1 class="jobs-title">Available Summer Jobs</h1>
+      <div class="jobs-filters homepage-filters">
+        <input type="text" class="search-input" placeholder="Search jobs (e.g. Barista, Dog Walker)">
+        <select class="filter-dropdown" id="ageFilter">
+          <option value="">Age</option>
+          <option value="13">13+</option>
+          <option value="16">16+</option>
+          <option value="18">18+</option>
+        </select>
+        <select class="filter-dropdown" id="locationFilter">
+          <option value="">Location</option>
+          <option value="London">London</option>
+          <option value="Manchester">Manchester</option>
+          <option value="Bristol">Bristol</option>
+          <option value="Leeds">Leeds</option>
+          <option value="Sheffield">Sheffield</option>
+          <option value="Liverpool">Liverpool</option>
+          <option value="Birmingham">Birmingham</option>
+          <option value="Edinburgh">Edinburgh</option>
+        </select>
+        <select class="filter-dropdown" id="payFilter">
+          <option value="">Pay</option>
+          <option value="5-7">£5–7/hr</option>
+          <option value="8-10">£8–10/hr</option>
+          <option value="10+">£10+/hr</option>
+        </select>
+      </div>
+      <div class="jobs-grid" id="jobsGrid">
+        <div class="job-card">
+          <h2>Retail Assistant</h2>
+          <p><strong>Company:</strong> Tesco</p>
+          <p><strong>Location:</strong> Manchester</p>
+          <p><strong>Pay:</strong> £8.50/hr</p>
+          <button class="btn btn-apply" onclick="requireLoginForApply('Retail Assistant','Tesco','Manchester','£8.50/hr')">Apply Now</button>
+        </div>
+        <div class="job-card">
+          <h2>Ice Cream Server</h2>
+          <p><strong>Company:</strong> Scoop & Swirl</p>
+          <p><strong>Location:</strong> Brighton</p>
+          <p><strong>Pay:</strong> £7.00/hr</p>
+          <button class="btn btn-apply" onclick="requireLoginForApply('Ice Cream Server','Scoop & Swirl','Brighton','£7.00/hr')">Apply Now</button>
+        </div>
+        <div class="job-card">
+          <h2>Lifeguard</h2>
+          <p><strong>Company:</strong> Splash Leisure Centre</p>
+          <p><strong>Location:</strong> Birmingham</p>
+          <p><strong>Pay:</strong> £10.50/hr</p>
+          <button class="btn btn-apply" onclick="requireLoginForApply('Lifeguard','Splash Leisure Centre','Birmingham','£10.50/hr')">Apply Now</button>
+        </div>
+        <div class="job-card">
+          <h2>Dog Walker</h2>
+          <p><strong>Company:</strong> Happy Paws</p>
+          <p><strong>Location:</strong> Leeds</p>
+          <p><strong>Pay:</strong> £6.50/hr</p>
+          <button class="btn btn-apply" onclick="requireLoginForApply('Dog Walker','Happy Paws','Leeds','£6.50/hr')">Apply Now</button>
+        </div>
+        <!-- ADDITIONAL JOB CARDS START -->
+        <div class="job-card"><h2>Barista</h2><p><strong>Company:</strong> Costa Coffee</p><p><strong>Location:</strong> London</p><p><strong>Pay:</strong> £9.00/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Barista','Costa Coffee','London','£9.00/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Library Assistant</h2><p><strong>Company:</strong> Manchester City Library</p><p><strong>Location:</strong> Manchester</p><p><strong>Pay:</strong> £7.50/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Library Assistant','Manchester City Library','Manchester','£7.50/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Camp Counsellor</h2><p><strong>Company:</strong> SummerFun Camps</p><p><strong>Location:</strong> Bristol</p><p><strong>Pay:</strong> £8.00/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Camp Counsellor','SummerFun Camps','Bristol','£8.00/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Shop Assistant</h2><p><strong>Company:</strong> WHSmith</p><p><strong>Location:</strong> Liverpool</p><p><strong>Pay:</strong> £7.80/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Shop Assistant','WHSmith','Liverpool','£7.80/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Gardener</h2><p><strong>Company:</strong> GreenThumb</p><p><strong>Location:</strong> Oxford</p><p><strong>Pay:</strong> £8.20/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Gardener','GreenThumb','Oxford','£8.20/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Theme Park Attendant</h2><p><strong>Company:</strong> Alton Towers</p><p><strong>Location:</strong> Staffordshire</p><p><strong>Pay:</strong> £9.50/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Theme Park Attendant','Alton Towers','Staffordshire','£9.50/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Waiter/Waitress</h2><p><strong>Company:</strong> Pizza Express</p><p><strong>Location:</strong> York</p><p><strong>Pay:</strong> £8.00/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Waiter/Waitress','Pizza Express','York','£8.00/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Farm Helper</h2><p><strong>Company:</strong> Sunny Fields</p><p><strong>Location:</strong> Somerset</p><p><strong>Pay:</strong> £7.20/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Farm Helper','Sunny Fields','Somerset','£7.20/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Receptionist</h2><p><strong>Company:</strong> Fit4All Gym</p><p><strong>Location:</strong> Newcastle</p><p><strong>Pay:</strong> £8.80/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Receptionist','Fit4All Gym','Newcastle','£8.80/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Pet Sitter</h2><p><strong>Company:</strong> PetPal</p><p><strong>Location:</strong> Sheffield</p><p><strong>Pay:</strong> £6.80/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Pet Sitter','PetPal','Sheffield','£6.80/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Tour Guide</h2><p><strong>Company:</strong> CityWalks</p><p><strong>Location:</strong> Edinburgh</p><p><strong>Pay:</strong> £10.00/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Tour Guide','CityWalks','Edinburgh','£10.00/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Bookshop Assistant</h2><p><strong>Company:</strong> Waterstones</p><p><strong>Location:</strong> Cambridge</p><p><strong>Pay:</strong> £7.90/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Bookshop Assistant','Waterstones','Cambridge','£7.90/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Kitchen Porter</h2><p><strong>Company:</strong> The Green Spoon</p><p><strong>Location:</strong> Bath</p><p><strong>Pay:</strong> £7.50/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Kitchen Porter','The Green Spoon','Bath','£7.50/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Childcare Assistant</h2><p><strong>Company:</strong> Little Stars Nursery</p><p><strong>Location:</strong> Cardiff</p><p><strong>Pay:</strong> £8.10/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Childcare Assistant','Little Stars Nursery','Cardiff','£8.10/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Warehouse Operative</h2><p><strong>Company:</strong> Amazon</p><p><strong>Location:</strong> Milton Keynes</p><p><strong>Pay:</strong> £9.20/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Warehouse Operative','Amazon','Milton Keynes','£9.20/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Sports Coach</h2><p><strong>Company:</strong> ActiveTeens</p><p><strong>Location:</strong> Glasgow</p><p><strong>Pay:</strong> £10.00/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Sports Coach','ActiveTeens','Glasgow','£10.00/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Event Helper</h2><p><strong>Company:</strong> City Events</p><p><strong>Location:</strong> London</p><p><strong>Pay:</strong> £8.30/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Event Helper','City Events','London','£8.30/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Delivery Cyclist</h2><p><strong>Company:</strong> Deliveroo</p><p><strong>Location:</strong> Bristol</p><p><strong>Pay:</strong> £9.00/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Delivery Cyclist','Deliveroo','Bristol','£9.00/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Amusement Arcade Attendant</h2><p><strong>Company:</strong> FunZone</p><p><strong>Location:</strong> Blackpool</p><p><strong>Pay:</strong> £7.60/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Amusement Arcade Attendant','FunZone','Blackpool','£7.60/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Ice Rink Assistant</h2><p><strong>Company:</strong> WinterWorld</p><p><strong>Location:</strong> Nottingham</p><p><strong>Pay:</strong> £8.40/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Ice Rink Assistant','WinterWorld','Nottingham','£8.40/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Fruit Picker</h2><p><strong>Company:</strong> BerryBest Farms</p><p><strong>Location:</strong> Kent</p><p><strong>Pay:</strong> £7.10/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Fruit Picker','BerryBest Farms','Kent','£7.10/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Junior IT Assistant</h2><p><strong>Company:</strong> ByteTech</p><p><strong>Location:</strong> Reading</p><p><strong>Pay:</strong> £9.50/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Junior IT Assistant','ByteTech','Reading','£9.50/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Park Cleaner</h2><p><strong>Company:</strong> CleanGreen</p><p><strong>Location:</strong> Leicester</p><p><strong>Pay:</strong> £7.00/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Park Cleaner','CleanGreen','Leicester','£7.00/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Junior Photographer</h2><p><strong>Company:</strong> SnapShots</p><p><strong>Location:</strong> London</p><p><strong>Pay:</strong> £8.90/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Junior Photographer','SnapShots','London','£8.90/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Swimming Pool Attendant</h2><p><strong>Company:</strong> AquaCentre</p><p><strong>Location:</strong> Southampton</p><p><strong>Pay:</strong> £8.20/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Swimming Pool Attendant','AquaCentre','Southampton','£8.20/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Junior Baker</h2><p><strong>Company:</strong> Sweet Treats</p><p><strong>Location:</strong> Norwich</p><p><strong>Pay:</strong> £7.80/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Junior Baker','Sweet Treats','Norwich','£7.80/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Car Wash Attendant</h2><p><strong>Company:</strong> ShinyCars</p><p><strong>Location:</strong> Derby</p><p><strong>Pay:</strong> £7.30/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Car Wash Attendant','ShinyCars','Derby','£7.30/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Junior Barista</h2><p><strong>Company:</strong> Brew Crew</p><p><strong>Location:</strong> London</p><p><strong>Pay:</strong> £8.60/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Junior Barista','Brew Crew','London','£8.60/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Shop Floor Assistant</h2><p><strong>Company:</strong> Primark</p><p><strong>Location:</strong> Birmingham</p><p><strong>Pay:</strong> £7.90/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Shop Floor Assistant','Primark','Birmingham','£7.90/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Junior Chef</h2><p><strong>Company:</strong> Bella Italia</p><p><strong>Location:</strong> Glasgow</p><p><strong>Pay:</strong> £8.70/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Junior Chef','Bella Italia','Glasgow','£8.70/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Ticket Seller</h2><p><strong>Company:</strong> Odeon Cinemas</p><p><strong>Location:</strong> Liverpool</p><p><strong>Pay:</strong> £7.60/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Ticket Seller','Odeon Cinemas','Liverpool','£7.60/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Junior Web Assistant</h2><p><strong>Company:</strong> WebGen</p><p><strong>Location:</strong> London</p><p><strong>Pay:</strong> £9.10/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Junior Web Assistant','WebGen','London','£9.10/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Playground Supervisor</h2><p><strong>Company:</strong> PlaySafe</p><p><strong>Location:</strong> Newcastle</p><p><strong>Pay:</strong> £7.40/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Playground Supervisor','PlaySafe','Newcastle','£7.40/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Junior Cashier</h2><p><strong>Company:</strong> Sainsbury's</p><p><strong>Location:</strong> London</p><p><strong>Pay:</strong> £8.10/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Junior Cashier','Sainsbury\'s','London','£8.10/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Junior Waiter</h2><p><strong>Company:</strong> Nando's</p><p><strong>Location:</strong> Cardiff</p><p><strong>Pay:</strong> £7.80/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Junior Waiter','Nando\'s','Cardiff','£7.80/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Junior Sales Assistant</h2><p><strong>Company:</strong> JD Sports</p><p><strong>Location:</strong> Manchester</p><p><strong>Pay:</strong> £8.20/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Junior Sales Assistant','JD Sports','Manchester','£8.20/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Junior Lifeguard</h2><p><strong>Company:</strong> SwimSafe</p><p><strong>Location:</strong> Brighton</p><p><strong>Pay:</strong> £8.50/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Junior Lifeguard','SwimSafe','Brighton','£8.50/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Junior Receptionist</h2><p><strong>Company:</strong> City Spa</p><p><strong>Location:</strong> Bath</p><p><strong>Pay:</strong> £8.00/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Junior Receptionist','City Spa','Bath','£8.00/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Junior Event Helper</h2><p><strong>Company:</strong> EventEase</p><p><strong>Location:</strong> London</p><p><strong>Pay:</strong> £8.60/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Junior Event Helper','EventEase','London','£8.60/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Junior Dog Walker</h2><p><strong>Company:</strong> Walkies</p><p><strong>Location:</strong> Bristol</p><p><strong>Pay:</strong> £7.20/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Junior Dog Walker','Walkies','Bristol','£7.20/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Junior Shop Assistant</h2><p><strong>Company:</strong> Boots</p><p><strong>Location:</strong> London</p><p><strong>Pay:</strong> £8.30/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Junior Shop Assistant','Boots','London','£8.30/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Junior Library Assistant</h2><p><strong>Company:</strong> City Library</p><p><strong>Location:</strong> Liverpool</p><p><strong>Pay:</strong> £7.60/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Junior Library Assistant','City Library','Liverpool','£7.60/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Junior Farm Helper</h2><p><strong>Company:</strong> Green Acres</p><p><strong>Location:</strong> York</p><p><strong>Pay:</strong> £7.10/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Junior Farm Helper','Green Acres','York','£7.10/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Junior Park Cleaner</h2><p><strong>Company:</strong> ParkCare</p><p><strong>Location:</strong> Sheffield</p><p><strong>Pay:</strong> £7.00/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Junior Park Cleaner','ParkCare','Sheffield','£7.00/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Junior Kitchen Porter</h2><p><strong>Company:</strong> The Blue Plate</p><p><strong>Location:</strong> Oxford</p><p><strong>Pay:</strong> £7.50/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Junior Kitchen Porter','The Blue Plate','Oxford','£7.50/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Junior Playground Supervisor</h2><p><strong>Company:</strong> PlayMore</p><p><strong>Location:</strong> Cambridge</p><p><strong>Pay:</strong> £7.40/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Junior Playground Supervisor','PlayMore','Cambridge','£7.40/hr')">Apply Now</button></div>
+        <div class="job-card"><h2>Junior Event Helper</h2><p><strong>Company:</strong> EventEase</p><p><strong>Location:</strong> London</p><p><strong>Pay:</strong> £8.60/hr</p><button class="btn btn-apply" onclick="requireLoginForApply('Junior Event Helper','EventEase','London','£8.60/hr')">Apply Now</button></div>
+        <!-- ADDITIONAL JOB CARDS END -->
+      </div>
+    </div>
+  </main>
+  <footer class="footer">
+    <div class="container">
+      &copy; 2025 TeenWork. All rights reserved.
+    </div>
+  </footer>
+  <div id="applicationModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeApplicationModal()">&times;</span>
+      <h2 id="modalJobTitle">Apply for Job</h2>
+      <p id="modalCompany"></p>
+      <p id="modalLocation"></p>
+      <p id="modalPay"></p>
+      <form onsubmit="submitApplication(event)">
+        <label for="applicantName">Your Name</label>
+        <input type="text" id="applicantName" name="applicantName" required>
+        <label for="applicantEmail">Your Email</label>
+        <input type="email" id="applicantEmail" name="applicantEmail" required>
+        <button type="submit" class="btn btn-primary">Submit Application</button>
+      </form>
+    </div>
+  </div>
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="closeLoginModal">&times;</span>
+      <h2>Login</h2>
+      <form id="loginForm">
+        <label for="loginUsername">Username or Email</label>
+        <input type="text" id="loginUsername" required>
+        <label for="loginPassword">Password</label>
+        <input type="password" id="loginPassword" required>
+        <button type="submit" class="btn btn-primary">Login</button>
+      </form>
+      <p>Don't have an account? <a href="#" id="toSignup">Sign up</a></p>
+    </div>
+  </div>
+  <div id="signupModal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="closeSignupModal">&times;</span>
+      <h2>Sign Up</h2>
+      <form id="signupForm">
+        <label for="signupUsername">Username</label>
+        <input type="text" id="signupUsername" required>
+        <label for="signupEmail">Email</label>
+        <input type="email" id="signupEmail" required>
+        <label for="signupPassword">Password</label>
+        <input type="password" id="signupPassword" required>
+        <button type="submit" class="btn btn-primary">Sign Up</button>
+      </form>
+      <p>Already have an account? <a href="#" id="toLogin">Login</a></p>
+    </div>
+  </div>
+  <script src="main.js"></script>
+</body>
+</html> 
