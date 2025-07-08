@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TeenWork | Find Your First Summer Job</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css?family=Poppins:400,600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="logo">TeenWork</a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="jobs.html">Jobs</a></li>
+        <li><a href="courses.html">Courses</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li id="dashboardNav" style="display:none;"><a href="dashboard.html">Dashboard</a></li>
+      </ul>
+      <button class="menu-toggle" id="menuToggle" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="auth-buttons">
+        <button id="loginBtn" class="btn btn-primary" style="margin-right:0.5rem;">Login</button>
+        <button id="signupBtn" class="btn">Sign Up</button>
+        <button id="logoutBtn" class="btn" style="display:none;">Logout</button>
+      </div>
+    </div>
+  </nav>
+  <header class="hero">
+    <div class="container hero-content">
+      <h1>Find Your First Summer Job</h1>
+      <p>Helping UK teens aged 13–18 find real-world experience.</p>
+      <a href="jobs.html" class="btn btn-primary">Browse Jobs</a>
+    </div>
+  </header>
+  <section class="best-rated-jobs">
+    <div class="container">
+      <h2>Best Rated Jobs</h2>
+      <div class="job-cards-row">
+        <div class="job-card">
+          <div class="job-rating"><span class="stars">★ ★ ★ ★ ★</span></div>
+          <h3>Pet Sitter</h3>
+          <p><strong>Company:</strong> PetPal</p>
+          <p><strong>Pay:</strong> £6.80/hr</p>
+          <button class="btn btn-apply" onclick="openApplicationModal('Pet Sitter','PetPal','Sheffield','£6.80/hr')">Apply Now</button>
+        </div>
+        <div class="job-card">
+          <div class="job-rating"><span class="stars">★ ★ ★ ★ ★</span></div>
+          <h3>Junior Photographer</h3>
+          <p><strong>Company:</strong> SnapShots</p>
+          <p><strong>Pay:</strong> £8.90/hr</p>
+          <button class="btn btn-apply" onclick="openApplicationModal('Junior Photographer','SnapShots','London','£8.90/hr')">Apply Now</button>
+        </div>
+        <div class="job-card">
+          <div class="job-rating"><span class="stars">★ ★ ★ ★ ★</span></div>
+          <h3>Dog Walker</h3>
+          <p><strong>Company:</strong> Happy Paws</p>
+          <p><strong>Pay:</strong> £6.50/hr</p>
+          <button class="btn btn-apply" onclick="openApplicationModal('Dog Walker','Happy Paws','Leeds','£6.50/hr')">Apply Now</button>
+        </div>
+        <div class="job-card">
+          <div class="job-rating"><span class="stars">★ ★ ★ ★ ★</span></div>
+          <h3>Camp Counsellor</h3>
+          <p><strong>Company:</strong> SummerFun Camps</p>
+          <p><strong>Pay:</strong> £8.00/hr</p>
+          <button class="btn btn-apply" onclick="openApplicationModal('Camp Counsellor','SummerFun Camps','Bristol','£8.00/hr')">Apply Now</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div id="applicationModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeApplicationModal()">&times;</span>
+      <h2 id="modalJobTitle">Apply for Job</h2>
+      <p id="modalCompany"></p>
+      <p id="modalLocation"></p>
+      <p id="modalPay"></p>
+      <form onsubmit="submitApplication(event)">
+        <label for="applicantName">Your Name</label>
+        <input type="text" id="applicantName" name="applicantName" required>
+        <label for="applicantEmail">Your Email</label>
+        <input type="email" id="applicantEmail" name="applicantEmail" required>
+        <button type="submit" class="btn btn-primary">Submit Application</button>
+      </form>
+    </div>
+  </div>
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="closeLoginModal">&times;</span>
+      <h2>Login</h2>
+      <form id="loginForm">
+        <label for="loginUsername">Username or Email</label>
+        <input type="text" id="loginUsername" required>
+        <label for="loginPassword">Password</label>
+        <input type="password" id="loginPassword" required>
+        <button type="submit" class="btn btn-primary">Login</button>
+      </form>
+      <p>Don't have an account? <a href="#" id="toSignup">Sign up</a></p>
+    </div>
+  </div>
+  <div id="signupModal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="closeSignupModal">&times;</span>
+      <h2>Sign Up</h2>
+      <form id="signupForm">
+        <label for="signupUsername">Username</label>
+        <input type="text" id="signupUsername" required>
+        <label for="signupEmail">Email</label>
+        <input type="email" id="signupEmail" required>
+        <label for="signupPassword">Password</label>
+        <input type="password" id="signupPassword" required>
+        <button type="submit" class="btn btn-primary">Sign Up</button>
+      </form>
+      <p>Already have an account? <a href="#" id="toLogin">Login</a></p>
+    </div>
+  </div>
+  <section class="features">
+    <div class="container features-grid">
+      <div class="feature-card">
+        <h3>Safe & Verified Jobs</h3>
+        <p>All listings are checked for safety and legitimacy, so you can apply with confidence.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Teen-Focused Design</h3>
+        <p>Our platform is built for young people, with simple navigation and clear information.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Free & Easy to Use</h3>
+        <p>TeenWork is 100% free for teens. No sign-up required to browse jobs!</p>
+      </div>
+    </div>
+  </section>
+  <section class="how-it-works">
+    <div class="container">
+      <h2>How It Works</h2>
+      <div class="hiw-steps">
+        <div class="hiw-step">
+          <span class="hiw-number">1</span>
+          <h4>Browse Jobs</h4>
+          <p>Explore a wide range of summer jobs for teens across the UK, all in one place.</p>
+        </div>
+        <div class="hiw-step">
+          <span class="hiw-number">2</span>
+          <h4>Apply Easily</h4>
+          <p>Click “Apply Now” and fill out a simple form. No complicated CVs or cover letters needed.</p>
+        </div>
+        <div class="hiw-step">
+          <span class="hiw-number">3</span>
+          <h4>Get Experience</h4>
+          <p>Start your first job, gain real-world skills, and earn your own money this summer!</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="testimonials">
+    <div class="container">
+      <h2>What Teens Say</h2>
+      <div class="testimonials-grid">
+        <div class="testimonial-card">
+          <p>“I found my first job as a barista through TeenWork. The process was so easy and I made new friends!”</p>
+          <span>- Emily, 16, London</span>
+        </div>
+        <div class="testimonial-card">
+          <p>“TeenWork helped me get a summer job at a local shop. I learned a lot and saved up for my first bike.”</p>
+          <span>- Aiden, 15, Manchester</span>
+        </div>
+        <div class="testimonial-card">
+          <p>“I was nervous about applying for jobs, but TeenWork made it simple and safe. Highly recommend!”</p>
+          <span>- Priya, 17, Birmingham</span>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="cta-section">
+    <div class="container cta-container">
+      <h2>Ready to Start Your Journey?</h2>
+      <p>Sign up for your first summer job and gain valuable experience. Your future starts here!</p>
+      <a href="jobs.html" class="btn btn-primary">Browse Jobs Now</a>
+    </div>
+  </section>
+  <footer class="footer">
+    <div class="container">
+      &copy; 2025 TeenWork. All rights reserved.
+    </div>
+  </footer>
+  <script src="main.js"></script>
+</body>
+</html> 
