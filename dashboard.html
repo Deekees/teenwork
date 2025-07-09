@@ -7,38 +7,50 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <nav class="nav-container">
-    <a href="index.html" class="logo">TeenWork</a>
-    <ul class="nav-links" id="navLinks">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="jobs.html">Jobs</a></li>
-      <li><a href="courses.html">Courses</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="contact.html">Contact</a></li>
-      <li id="dashboardNav" style="display:none;"><a href="dashboard.html">Dashboard</a></li>
-    </ul>
-    <button class="menu-toggle" id="menuToggle" aria-label="Open menu">
-      <span></span><span></span><span></span>
-    </button>
-    <div class="auth-buttons">
-      <button id="loginBtn" class="btn btn-primary" style="margin-right:0.5rem;">Login</button>
-      <button id="signupBtn" class="btn">Sign Up</button>
-      <button id="logoutBtn" class="btn" style="display:none;">Logout</button>
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="logo">TeenWork</a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="jobs.html">Jobs</a></li>
+        <li><a href="courses.html">Courses</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li id="dashboardNav" style="display:none;"><a href="dashboard.html">Dashboard</a></li>
+        <li id="adminNav" style="display:none;"><a href="admin.html">Admin Dashboard</a></li>
+      </ul>
+      <button class="menu-toggle" id="menuToggle" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="auth-buttons">
+        <button id="loginBtn" class="btn btn-primary" style="margin-right:0.5rem;">Login</button>
+        <button id="signupBtn" class="btn">Sign Up</button>
+        <button id="logoutBtn" class="btn" style="display:none;">Logout</button>
+      </div>
     </div>
   </nav>
   <main class="container" style="margin-top:2em;">
     <h1 id="welcomeMsg">Welcome!</h1>
-    <h2>Your Applied Jobs</h2>
-    <div id="appliedJobsList"></div>
+    <div class="dashboard-flex">
+      <section class="dashboard-jobs">
+        <h2>Your Applied Jobs</h2>
+        <div id="appliedJobsList"></div>
+      </section>
+      <section class="dashboard-profile">
+        <h2>Your Profile</h2>
+        <div id="profileInfo"></div>
+        <button id="editProfileBtn" class="btn" style="margin-top:1.2em;">Edit Profile</button>
+      </section>
+    </div>
   </main>
   <div id="loginModal" class="modal">
     <div class="modal-content">
       <span class="close" id="closeLoginModal">&times;</span>
       <h2>Login</h2>
       <form id="loginForm">
-        <label for="loginUsername">Username or Email</label>
+        <label for="loginUsername">Username or Email</label><br>
         <input type="text" id="loginUsername" required>
-        <label for="loginPassword">Password</label>
+        <label for="loginPassword">Password</label><br>
         <input type="password" id="loginPassword" required>
         <button type="submit" class="btn btn-primary">Login</button>
       </form>
@@ -50,41 +62,185 @@
       <span class="close" id="closeSignupModal">&times;</span>
       <h2>Sign Up</h2>
       <form id="signupForm">
-        <label for="signupUsername">Username</label>
+        <label for="signupName">Name</label><br>
+        <input type="text" id="signupName" required>
+        <label for="signupUsername">Username</label><br>
         <input type="text" id="signupUsername" required>
-        <label for="signupEmail">Email</label>
+        <label for="signupEmail">Email</label><br>
         <input type="email" id="signupEmail" required>
-        <label for="signupPassword">Password</label>
+        <label for="signupPassword">Password</label><br>
         <input type="password" id="signupPassword" required>
+        <label for="signupConfirmPassword">Confirm Password</label><br>
+        <input type="password" id="signupConfirmPassword" required>
         <button type="submit" class="btn btn-primary">Sign Up</button>
       </form>
       <p>Already have an account? <a href="#" id="toLogin">Login</a></p>
     </div>
   </div>
+  <div id="removeJobModal" class="modal">
+    <div class="modal-content" style="max-width:340px; text-align:center;">
+      <span class="close" id="closeRemoveJobModal">&times;</span>
+      <h2>Remove Application</h2>
+      <p>Are you sure you want to remove this job application?</p>
+      <div style="display:flex; flex-direction:row; justify-content:center; align-items:center; margin-top:1.2em; gap:1em;">
+        <button id="confirmRemoveJobBtn">Yes</button>
+        <button id="cancelRemoveJobBtn">No</button>
+      </div>
+    </div>
+  </div>
+  <div id="editProfileModal" class="modal">
+    <div class="modal-content" style="max-width:400px; text-align:left;">
+      <span class="close" id="closeEditProfileModal">&times;</span>
+      <h2>Edit Profile</h2>
+      <form id="editProfileForm">
+        <label for="editAge">Age</label>
+        <input type="number" id="editAge" min="10" max="25" placeholder="Your age">
+        <label for="editLocation">Location</label>
+        <input type="text" id="editLocation" placeholder="Your location">
+        <label for="editAbout">About Me</label>
+        <textarea id="editAbout" rows="2" placeholder="A short bio..."></textarea>
+        <label for="editSkills">Skills</label>
+        <input type="text" id="editSkills" placeholder="e.g. Teamwork, Coding, Communication">
+        <label for="editInterests">Interests</label>
+        <input type="text" id="editInterests" placeholder="e.g. Football, Reading, Art">
+        <label for="editEducation">Education</label>
+        <input type="text" id="editEducation" placeholder="e.g. School, Year">
+        <label for="editAchievements">Achievements</label>
+        <input type="text" id="editAchievements" placeholder="e.g. Duke of Edinburgh, Coding Certificate">
+        <div style="display:flex; gap:1em; margin-top:1.5em;">
+          <button type="submit" class="btn btn-primary">Save</button>
+          <button type="button" id="cancelEditProfileBtn" class="btn">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
   <script src="main.js"></script>
   <script>
-    // Redirect if not logged in
-    const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
-    if (!user) {
-      window.location.href = 'index.html';
-    } else {
-      document.getElementById('welcomeMsg').textContent = `Welcome, ${user.username}!`;
-      const jobs = user.appliedJobs || [];
-      const list = document.getElementById('appliedJobsList');
-      if (jobs.length === 0) {
-        list.innerHTML = '<p>You have not applied for any jobs yet.</p>';
-      } else {
-        list.innerHTML = jobs.map(j => `
-          <div class="job-card">
-            <h3>${j.title}</h3>
-            <p><strong>Company:</strong> ${j.company}</p>
-            <p><strong>Location:</strong> ${j.location}</p>
-            <p><strong>Pay:</strong> ${j.pay}</p>
-            <p><small>Applied: ${new Date(j.date).toLocaleString()}</small></p>
-          </div>
-        `).join('');
+    document.addEventListener('DOMContentLoaded', function() {
+      // Redirect if not logged in
+      const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
+      if (!user) {
+        window.location.href = 'index.html';
+        return;
       }
-    }
+      function renderDashboardJobs() {
+        const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
+        if (!user) return;
+        document.getElementById('welcomeMsg').textContent = `Welcome, ${user.username}!`;
+        document.getElementById('profileInfo').innerHTML = `
+          <div class="profile-card">
+            <p><strong>Name:</strong> ${user.name || '<span style=\'color:#aaa\'>(not set)</span>'}</p>
+            <p><strong>Username:</strong> ${user.username}</p>
+            <p><strong>Email:</strong> ${user.email}</p>
+            <p><strong>Age:</strong> ${user.age ? user.age : '<span style=\'color:#aaa\'>(not set)</span>'}</p>
+            <p><strong>Location:</strong> ${user.location ? user.location : '<span style=\'color:#aaa\'>(not set)</span>'}</p>
+            <p><strong>About Me:</strong><br>${user.about ? user.about : '<span style=\'color:#aaa\'>(not set)</span>'}</p>
+            <p><strong>Skills:</strong> ${user.skills ? user.skills : '<span style=\'color:#aaa\'>(not set)</span>'}</p>
+            <p><strong>Interests:</strong> ${user.interests ? user.interests : '<span style=\'color:#aaa\'>(not set)</span>'}</p>
+            <p><strong>Education:</strong> ${user.education ? user.education : '<span style=\'color:#aaa\'>(not set)</span>'}</p>
+            <p><strong>Achievements:</strong> ${user.achievements ? user.achievements : '<span style=\'color:#aaa\'>(not set)</span>'}</p>
+          </div>
+        `;
+        const jobs = user.appliedJobs || [];
+        const list = document.getElementById('appliedJobsList');
+        if (jobs.length === 0) {
+          list.innerHTML = '<p>You have not applied for any jobs yet.</p>';
+        } else {
+          list.innerHTML = jobs.map((j, idx) => `
+            <div class="job-card">
+              <h3>${j.title}</h3>
+              <p><strong>Company:</strong> ${j.company}</p>
+              <p><strong>Location:</strong> ${j.location}</p>
+              <p><strong>Pay:</strong> ${j.pay}</p>
+              <p><small>Applied: ${new Date(j.date).toLocaleString()}</small></p>
+              <button class="btn" style="background:#e74c3c; color:#fff; margin-top:0.7em;" onclick="showRemoveJobModal(${idx})">Remove</button>
+            </div>
+          `).join('');
+        }
+      }
+      window.renderDashboardJobs = renderDashboardJobs;
+      renderDashboardJobs();
+
+      let jobToRemoveIdx = null;
+      window.showRemoveJobModal = function(idx) {
+        jobToRemoveIdx = idx;
+        document.getElementById('removeJobModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+      };
+      document.getElementById('closeRemoveJobModal').onclick = function() {
+        document.getElementById('removeJobModal').classList.remove('active');
+        document.body.style.overflow = '';
+        jobToRemoveIdx = null;
+      };
+      document.getElementById('confirmRemoveJobBtn').onclick = function() {
+        if (jobToRemoveIdx !== null) {
+          let user = JSON.parse(localStorage.getItem('currentUser') || 'null');
+          if (user && user.appliedJobs) {
+            user.appliedJobs.splice(jobToRemoveIdx, 1);
+            localStorage.setItem('currentUser', JSON.stringify(user));
+            let users = JSON.parse(localStorage.getItem('users') || '[]');
+            let idx = users.findIndex(u => u.username === user.username);
+            if (idx !== -1) {
+              users[idx] = user;
+              localStorage.setItem('users', JSON.stringify(users));
+            }
+            // Re-fetch the updated user and re-render immediately
+            user = JSON.parse(localStorage.getItem('currentUser') || 'null');
+            renderDashboardJobs();
+            if (typeof renderJobs === 'function') renderJobs();
+            if (typeof updateBestRatedJobButtons === 'function') updateBestRatedJobButtons();
+          }
+        }
+        document.getElementById('removeJobModal').classList.remove('active');
+        document.body.style.overflow = '';
+        jobToRemoveIdx = null;
+      };
+      document.getElementById('cancelRemoveJobBtn').onclick = function() {
+        document.getElementById('removeJobModal').classList.remove('active');
+        document.body.style.overflow = '';
+        jobToRemoveIdx = null;
+      };
+      document.getElementById('editProfileBtn').onclick = function() {
+        document.getElementById('editAge').value = user.age || '';
+        document.getElementById('editLocation').value = user.location || '';
+        document.getElementById('editAbout').value = user.about || '';
+        document.getElementById('editSkills').value = user.skills || '';
+        document.getElementById('editInterests').value = user.interests || '';
+        document.getElementById('editEducation').value = user.education || '';
+        document.getElementById('editAchievements').value = user.achievements || '';
+        document.getElementById('editProfileModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+      };
+      document.getElementById('closeEditProfileModal').onclick = function() {
+        document.getElementById('editProfileModal').classList.remove('active');
+        document.body.style.overflow = '';
+      };
+      document.getElementById('cancelEditProfileBtn').onclick = function() {
+        document.getElementById('editProfileModal').classList.remove('active');
+        document.body.style.overflow = '';
+      };
+      document.getElementById('editProfileForm').onsubmit = function(e) {
+        e.preventDefault();
+        const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
+        user.age = document.getElementById('editAge').value;
+        user.location = document.getElementById('editLocation').value;
+        user.about = document.getElementById('editAbout').value;
+        user.skills = document.getElementById('editSkills').value;
+        user.interests = document.getElementById('editInterests').value;
+        user.education = document.getElementById('editEducation').value;
+        user.achievements = document.getElementById('editAchievements').value;
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        let users = JSON.parse(localStorage.getItem('users') || '[]');
+        let idx = users.findIndex(u => u.username === user.username);
+        if (idx !== -1) {
+          users[idx] = user;
+          localStorage.setItem('users', JSON.stringify(users));
+        }
+        renderDashboardJobs();
+        document.getElementById('editProfileModal').classList.remove('active');
+        document.body.style.overflow = '';
+      };
+    });
   </script>
 </body>
 </html> 

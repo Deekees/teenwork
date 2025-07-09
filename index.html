@@ -18,6 +18,7 @@
         <li><a href="about.html">About</a></li>
         <li><a href="contact.html">Contact</a></li>
         <li id="dashboardNav" style="display:none;"><a href="dashboard.html">Dashboard</a></li>
+        <li id="adminNav" style="display:none;"><a href="admin.html">Admin Dashboard</a></li>
       </ul>
       <button class="menu-toggle" id="menuToggle" aria-label="Open menu">
         <span></span><span></span><span></span>
@@ -29,13 +30,57 @@
       </div>
     </div>
   </nav>
-  <header class="hero">
-    <div class="container hero-content">
-      <h1>Find Your First Summer Job</h1>
-      <p>Helping UK teens aged 13–18 find real-world experience.</p>
-      <a href="jobs.html" class="btn btn-primary">Browse Jobs</a>
+  <!-- HERO SLIDER START -->
+  <header>
+    <div class="hero-slider" id="heroSlider">
+      <button class="hero-slider-arrow left" id="heroPrev" aria-label="Previous slide">&#10094;</button>
+      <div class="hero-slide active">
+        <div class="container hero-slide-content">
+          <h1>Find Your First Summer Job</h1>
+          <p>Helping UK teens aged 13–18 find real-world experience.</p>
+          <a href="jobs.html" class="btn btn-primary">Browse Jobs</a>
+        </div>
+        <div class="hero-slide-image" style="display:none;"></div>
+      </div>
+      <div class="hero-slide">
+        <div class="container hero-slide-content">
+          <h1>Build Skills for Your Future</h1>
+          <p>Take free courses and get top tips to stand out to employers.</p>
+          <a href="courses.html" class="btn btn-primary">Explore Courses</a>
+        </div>
+        <div class="hero-slide-image" style="display:none;"></div>
+      </div>
+      <div class="hero-slide">
+        <div class="container hero-slide-content">
+          <h1>Start Earning & Gaining Experience</h1>
+          <p>Apply for safe, verified jobs and start your journey today.</p>
+          <a href="jobs.html" class="btn btn-primary">See Best Rated Jobs</a>
+        </div>
+        <div class="hero-slide-image">
+          <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80" alt="Teens working together">
+        </div>
+      </div>
+      <button class="hero-slider-arrow right" id="heroNext" aria-label="Next slide">&#10095;</button>
+      <div class="hero-slider-dots" id="heroDots"></div>
     </div>
   </header>
+  <!-- HERO SLIDER END -->
+  <section class="features">
+    <div class="container features-grid">
+      <div class="feature-card">
+        <h3>Safe & Verified Jobs</h3>
+        <p>All listings are checked for safety and legitimacy, so you can apply with confidence.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Teen-Focused Design</h3>
+        <p>Our platform is built for young people, with simple navigation and clear information.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Free & Easy to Use</h3>
+        <p>TeenWork is 100% free for teens. No sign-up required to browse jobs!</p>
+      </div>
+    </div>
+  </section>
   <section class="best-rated-jobs">
     <div class="container">
       <h2>Best Rated Jobs</h2>
@@ -45,28 +90,28 @@
           <h3>Pet Sitter</h3>
           <p><strong>Company:</strong> PetPal</p>
           <p><strong>Pay:</strong> £6.80/hr</p>
-          <button class="btn btn-apply" onclick="openApplicationModal('Pet Sitter','PetPal','Sheffield','£6.80/hr')">Apply Now</button>
+          <button class="btn btn-apply" onclick="if (getCurrentUser()) { requireLoginForApply('Pet Sitter','PetPal','Sheffield','£6.80/hr'); } else { openApplicationModal('Pet Sitter','PetPal','Sheffield','£6.80/hr'); }">Apply Now</button>
         </div>
         <div class="job-card">
           <div class="job-rating"><span class="stars">★ ★ ★ ★ ★</span></div>
           <h3>Junior Photographer</h3>
           <p><strong>Company:</strong> SnapShots</p>
           <p><strong>Pay:</strong> £8.90/hr</p>
-          <button class="btn btn-apply" onclick="openApplicationModal('Junior Photographer','SnapShots','London','£8.90/hr')">Apply Now</button>
+          <button class="btn btn-apply" onclick="if (getCurrentUser()) { requireLoginForApply('Junior Photographer','SnapShots','London','£8.90/hr'); } else { openApplicationModal('Junior Photographer','SnapShots','London','£8.90/hr'); }">Apply Now</button>
         </div>
         <div class="job-card">
           <div class="job-rating"><span class="stars">★ ★ ★ ★ ★</span></div>
           <h3>Dog Walker</h3>
           <p><strong>Company:</strong> Happy Paws</p>
           <p><strong>Pay:</strong> £6.50/hr</p>
-          <button class="btn btn-apply" onclick="openApplicationModal('Dog Walker','Happy Paws','Leeds','£6.50/hr')">Apply Now</button>
+          <button class="btn btn-apply" onclick="if (getCurrentUser()) { requireLoginForApply('Dog Walker','Happy Paws','Leeds','£6.50/hr'); } else { openApplicationModal('Dog Walker','Happy Paws','Leeds','£6.50/hr'); }">Apply Now</button>
         </div>
         <div class="job-card">
           <div class="job-rating"><span class="stars">★ ★ ★ ★ ★</span></div>
           <h3>Camp Counsellor</h3>
           <p><strong>Company:</strong> SummerFun Camps</p>
           <p><strong>Pay:</strong> £8.00/hr</p>
-          <button class="btn btn-apply" onclick="openApplicationModal('Camp Counsellor','SummerFun Camps','Bristol','£8.00/hr')">Apply Now</button>
+          <button class="btn btn-apply" onclick="if (getCurrentUser()) { requireLoginForApply('Camp Counsellor','SummerFun Camps','Bristol','£8.00/hr'); } else { openApplicationModal('Camp Counsellor','SummerFun Camps','Bristol','£8.00/hr'); }">Apply Now</button>
         </div>
       </div>
     </div>
@@ -92,9 +137,9 @@
       <span class="close" id="closeLoginModal">&times;</span>
       <h2>Login</h2>
       <form id="loginForm">
-        <label for="loginUsername">Username or Email</label>
-        <input type="text" id="loginUsername" required>
-        <label for="loginPassword">Password</label>
+        <label for="loginUsername">Username or Email<br></label>
+        <input type="text" id="loginUsername" required><br>
+        <label for="loginPassword"><br>Password</label><br>
         <input type="password" id="loginPassword" required>
         <button type="submit" class="btn btn-primary">Login</button>
       </form>
@@ -106,33 +151,21 @@
       <span class="close" id="closeSignupModal">&times;</span>
       <h2>Sign Up</h2>
       <form id="signupForm">
-        <label for="signupUsername">Username</label>
+        <label for="signupName">Name</label><br>
+        <input type="text" id="signupName" required>
+        <label for="signupUsername">Username</label><br>
         <input type="text" id="signupUsername" required>
-        <label for="signupEmail">Email</label>
+        <label for="signupEmail">Email</label><br>
         <input type="email" id="signupEmail" required>
-        <label for="signupPassword">Password</label>
+        <label for="signupPassword">Password</label><br>
         <input type="password" id="signupPassword" required>
+        <label for="signupConfirmPassword">Confirm Password</label><br>
+        <input type="password" id="signupConfirmPassword" required>
         <button type="submit" class="btn btn-primary">Sign Up</button>
       </form>
       <p>Already have an account? <a href="#" id="toLogin">Login</a></p>
     </div>
   </div>
-  <section class="features">
-    <div class="container features-grid">
-      <div class="feature-card">
-        <h3>Safe & Verified Jobs</h3>
-        <p>All listings are checked for safety and legitimacy, so you can apply with confidence.</p>
-      </div>
-      <div class="feature-card">
-        <h3>Teen-Focused Design</h3>
-        <p>Our platform is built for young people, with simple navigation and clear information.</p>
-      </div>
-      <div class="feature-card">
-        <h3>Free & Easy to Use</h3>
-        <p>TeenWork is 100% free for teens. No sign-up required to browse jobs!</p>
-      </div>
-    </div>
-  </section>
   <section class="how-it-works">
     <div class="container">
       <h2>How It Works</h2>
@@ -187,5 +220,44 @@
     </div>
   </footer>
   <script src="main.js"></script>
+  <script>
+function renderBestRatedJobButton(title, company, location, pay) {
+  var user = JSON.parse(localStorage.getItem('currentUser') || 'null');
+  var alreadyApplied = false;
+  if (user && user.appliedJobs) {
+    alreadyApplied = user.appliedJobs.some(j => j.title === title && j.company === company);
+  }
+  if (user) {
+    if (alreadyApplied) {
+      return '<button class="btn btn-apply" style="background:#bfc9d1; color:#fff; box-shadow:none; cursor:not-allowed; opacity:0.7;" disabled>Already Applied</button>';
+    } else {
+      return `<button class=\"btn btn-apply\" onclick=\"requireLoginForApply('${title}','${company}','${location}','${pay}')\">Apply Now</button>`;
+    }
+  } else {
+    return `<button class=\"btn btn-apply\" onclick=\"openApplicationModal('${title}','${company}','${location}','${pay}')\">Apply Now</button>`;
+  }
+}
+function updateBestRatedJobButtons() {
+  var bestRatedJobs = [
+    {title:'Pet Sitter', company:'PetPal', location:'Sheffield', pay:'£6.80/hr'},
+    {title:'Junior Photographer', company:'SnapShots', location:'London', pay:'£8.90/hr'},
+    {title:'Dog Walker', company:'Happy Paws', location:'Leeds', pay:'£6.50/hr'},
+    {title:'Camp Counsellor', company:'SummerFun Camps', location:'Bristol', pay:'£8.00/hr'}
+  ];
+  var cards = document.querySelectorAll('.best-rated-jobs .job-card');
+  cards.forEach(function(card, i) {
+    var btn = card.querySelector('.btn-apply');
+    if (btn) {
+      btn.outerHTML = renderBestRatedJobButton(
+        bestRatedJobs[i].title,
+        bestRatedJobs[i].company,
+        bestRatedJobs[i].location,
+        bestRatedJobs[i].pay
+      );
+    }
+  });
+}
+window.addEventListener('DOMContentLoaded', updateBestRatedJobButtons);
+</script>
 </body>
 </html> 

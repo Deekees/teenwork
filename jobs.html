@@ -18,6 +18,7 @@
         <li><a href="about.html">About</a></li>
         <li><a href="contact.html">Contact</a></li>
         <li id="dashboardNav" style="display:none;"><a href="dashboard.html">Dashboard</a></li>
+        <li id="adminNav" style="display:none;"><a href="admin.html">Admin Dashboard</a></li>
       </ul>
       <button class="menu-toggle" id="menuToggle" aria-label="Open menu">
         <span></span><span></span><span></span>
@@ -62,6 +63,17 @@
           <option value="5-7">£5–7/hr</option>
           <option value="8-10">£8–10/hr</option>
           <option value="10+">£10+/hr</option>
+        </select>
+        <select class="filter-dropdown" id="sortFilter">
+          <option value="">Sort By</option>
+          <option value="alpha-asc">Alphabetical (A–Z)</option>
+          <option value="alpha-desc">Alphabetical (Z–A)</option>
+          <option value="rating-desc">Rating (High to Low)</option>
+          <option value="rating-asc">Rating (Low to High)</option>
+          <option value="pay-desc">Pay (High to Low)</option>
+          <option value="pay-asc">Pay (Low to High)</option>
+          <option value="age-asc">Minimum Age (Low to High)</option>
+          <option value="age-desc">Minimum Age (High to Low)</option>
         </select>
       </div>
       <div class="jobs-grid" id="jobsGrid">
@@ -171,9 +183,9 @@
       <span class="close" id="closeLoginModal">&times;</span>
       <h2>Login</h2>
       <form id="loginForm">
-        <label for="loginUsername">Username or Email</label>
+        <label for="loginUsername">Username or Email</label><br>
         <input type="text" id="loginUsername" required>
-        <label for="loginPassword">Password</label>
+        <label for="loginPassword">Password</label><br>
         <input type="password" id="loginPassword" required>
         <button type="submit" class="btn btn-primary">Login</button>
       </form>
@@ -185,11 +197,11 @@
       <span class="close" id="closeSignupModal">&times;</span>
       <h2>Sign Up</h2>
       <form id="signupForm">
-        <label for="signupUsername">Username</label>
+        <label for="signupUsername">Username</label><br>
         <input type="text" id="signupUsername" required>
-        <label for="signupEmail">Email</label>
+        <label for="signupEmail">Email</label><br>
         <input type="email" id="signupEmail" required>
-        <label for="signupPassword">Password</label>
+        <label for="signupPassword">Password</label><br>
         <input type="password" id="signupPassword" required>
         <button type="submit" class="btn btn-primary">Sign Up</button>
       </form>

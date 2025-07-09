@@ -6,11 +6,11 @@ function openApplicationModal(title, company, location, pay) {
   document.getElementById('modalCompany').textContent = 'Company: ' + company;
   document.getElementById('modalLocation').textContent = 'Location: ' + location;
   document.getElementById('modalPay').textContent = 'Pay: ' + pay;
-  document.getElementById('applicationModal').style.display = 'block';
+  document.getElementById('applicationModal').classList.add('active');
   document.body.style.overflow = 'hidden';
 }
 function closeApplicationModal() {
-  document.getElementById('applicationModal').style.display = 'none';
+  document.getElementById('applicationModal').classList.remove('active');
   document.body.style.overflow = '';
 }
 function submitApplication(e) {
@@ -48,10 +48,12 @@ window.onclick = function(event) {
 
 // --- Auth & Modal Logic ---
 function showModal(id) {
-  document.getElementById(id).style.display = 'block';
+  document.getElementById(id).classList.add('active');
+  document.body.style.overflow = 'hidden';
 }
 function closeModal(id) {
-  document.getElementById(id).style.display = 'none';
+  document.getElementById(id).classList.remove('active');
+  document.body.style.overflow = '';
 }
 // Modal open/close for login/signup
 const loginBtn = document.getElementById('loginBtn');
@@ -101,6 +103,14 @@ function updateAuthUI() {
     if (signupBtn) signupBtn.style.display = 'none';
     if (logoutBtn) logoutBtn.style.display = '';
     if (dashboardNav) dashboardNav.style.display = '';
+    // If employer, change dashboard link to employer-dashboard.html
+    if (dashboardNav && user.role === 'employer') {
+      dashboardNav.querySelector('a').setAttribute('href', 'employer-dashboard.html');
+      dashboardNav.querySelector('a').textContent = 'Employer Dashboard';
+    } else if (dashboardNav) {
+      dashboardNav.querySelector('a').setAttribute('href', 'dashboard.html');
+      dashboardNav.querySelector('a').textContent = 'Dashboard';
+    }
   } else {
     if (loginBtn) loginBtn.style.display = '';
     if (signupBtn) signupBtn.style.display = '';
@@ -110,20 +120,43 @@ function updateAuthUI() {
 }
 updateAuthUI();
 
+const adminNav = document.getElementById('adminNav');
+const user = getCurrentUser();
+if (adminNav) {
+  if (user && user.username === 'admin') {
+    adminNav.style.display = '';
+    // Ensure admin user has role 'admin'
+    let users = getUsers();
+    let idx = users.findIndex(u => u.username === 'admin');
+    if (idx !== -1 && users[idx].role !== 'admin') {
+      users[idx].role = 'admin';
+      setUsers(users);
+    }
+  } else {
+    adminNav.style.display = 'none';
+  }
+}
+
 // Signup logic
 const signupForm = document.getElementById('signupForm');
 if (signupForm) {
   signupForm.onsubmit = function(e) {
     e.preventDefault();
+    const name = document.getElementById('signupName').value.trim();
     const username = document.getElementById('signupUsername').value.trim();
     const email = document.getElementById('signupEmail').value.trim();
     const password = document.getElementById('signupPassword').value;
+    const confirmPassword = document.getElementById('signupConfirmPassword').value;
+    if (password !== confirmPassword) {
+      alert('Passwords do not match.');
+      return;
+    }
     let users = getUsers();
     if (users.find(u => u.username === username || u.email === email)) {
       alert('User already exists with that username or email.');
       return;
     }
-    const user = { username, email, password, appliedJobs: [] };
+    const user = { name, username, email, password, appliedJobs: [], createdAt: new Date().toISOString() };
     users.push(user);
     setUsers(users);
     setCurrentUser(user);
@@ -238,6 +271,141 @@ const jobsData = [
   {title:'Junior Event Helper', company:'EventEase', location:'London', pay:8.6, payDisplay:'£8.60/hr', minAge:16, rating:4.3},
 ];
 
+// --- Job Storage Logic ---
+function getAllJobs() {
+  // Merge default jobsData with jobs in localStorage (avoiding duplicates by title+company)
+  let stored = JSON.parse(localStorage.getItem('allJobs') || '[]');
+  // Avoid duplicate jobs (by title+company)
+  const merged = [...jobsData];
+  stored.forEach(job => {
+    if (!merged.some(j => j.title === job.title && j.company === job.company)) {
+      merged.push(job);
+    }
+  });
+  return merged;
+}
+function setAllJobs(jobs) {
+  // Only store jobs not in jobsData (i.e., employer-created)
+  const toStore = jobs.filter(j => !jobsData.some(dj => dj.title === j.title && dj.company === j.company));
+  localStorage.setItem('allJobs', JSON.stringify(toStore));
+}
+
+// --- Employer Dashboard Logic ---
+if (document.getElementById('createJobForm')) {
+  let editingJobIndex = null;
+  document.getElementById('createJobForm').onsubmit = function(e) {
+    e.preventDefault();
+    const user = getCurrentUser();
+    if (!user || user.role !== 'employer') {
+      alert('Only employers can create jobs.');
+      return;
+    }
+    const title = document.getElementById('jobTitle').value.trim();
+    const company = document.getElementById('jobCompany').value.trim();
+    const location = document.getElementById('jobLocation').value.trim();
+    const pay = document.getElementById('jobPay').value.trim();
+    const minAge = parseInt(document.getElementById('jobMinAge').value);
+    const description = document.getElementById('jobDescription').value.trim();
+    if (!title || !company || !location || !pay || !minAge || !description) {
+      alert('Please fill in all fields.');
+      return;
+    }
+    let jobs = getAllJobs();
+    if (editingJobIndex !== null) {
+      // Update existing job
+      let job = jobs[editingJobIndex];
+      job.title = title;
+      job.company = company;
+      job.location = location;
+      job.pay = parseFloat(pay.replace(/[^\d.]/g, ''));
+      job.payDisplay = pay;
+      job.minAge = minAge;
+      job.description = description;
+      job.updatedAt = new Date().toISOString();
+      jobs[editingJobIndex] = job;
+      setAllJobs(jobs);
+      editingJobIndex = null;
+      document.getElementById('createJobForm').reset();
+      document.getElementById('createJobForm').querySelector('button[type="submit"]').textContent = 'Create Job';
+      renderEmployerJobs();
+      if (typeof renderJobs === 'function') renderJobs();
+      alert('Job updated!');
+      return;
+    }
+    // Create new job
+    const newJob = {
+      title,
+      company,
+      location,
+      pay: parseFloat(pay.replace(/[^\d.]/g, '')),
+      payDisplay: pay,
+      minAge,
+      description,
+      createdBy: user.username,
+      createdAt: new Date().toISOString(),
+      rating: null
+    };
+    jobs.push(newJob);
+    setAllJobs(jobs);
+    document.getElementById('createJobForm').reset();
+    renderEmployerJobs();
+    if (typeof renderJobs === 'function') renderJobs();
+    alert('Job created!');
+  };
+  function renderEmployerJobs() {
+    const user = getCurrentUser();
+    if (!user) return;
+    let jobs = getAllJobs();
+    let myJobs = jobs.map((j, idx) => ({...j, _idx: idx})).filter(j => j.createdBy === user.username);
+    const list = document.getElementById('employerJobsList');
+    if (!list) return;
+    if (myJobs.length === 0) {
+      list.innerHTML = '<p style="color:#888;">No job listings yet. Jobs you create will appear here.</p>';
+    } else {
+      list.innerHTML = myJobs.map(j => `
+        <div class="job-card" style="margin-bottom:1.5em;">
+          <h3>${j.title}</h3>
+          <p><strong>Company:</strong> ${j.company}</p>
+          <p><strong>Location:</strong> ${j.location}</p>
+          <p><strong>Pay:</strong> ${j.payDisplay}</p>
+          <p><strong>Minimum Age:</strong> ${j.minAge}+</p>
+          <p>${j.description}</p>
+          <p style=\"color:#aaa;font-size:0.95em;\">Created: ${new Date(j.createdAt).toLocaleString()}${j.updatedAt ? '<br>Updated: ' + new Date(j.updatedAt).toLocaleString() : ''}</p>
+          <button class='btn' onclick='editEmployerJob(${j._idx})' style='margin-right:0.7em;'>Edit</button>
+          <button class='btn' style='background:#e74c3c; color:#fff;' onclick='deleteEmployerJob(${j._idx})'>Delete</button>
+        </div>
+      `).join('');
+    }
+  }
+  window.renderEmployerJobs = renderEmployerJobs;
+  renderEmployerJobs();
+  window.editEmployerJob = function(idx) {
+    const jobs = getAllJobs();
+    const job = jobs[idx];
+    if (!job) return;
+    document.getElementById('jobTitle').value = job.title;
+    document.getElementById('jobCompany').value = job.company;
+    document.getElementById('jobLocation').value = job.location;
+    document.getElementById('jobPay').value = job.payDisplay;
+    document.getElementById('jobMinAge').value = job.minAge;
+    document.getElementById('jobDescription').value = job.description;
+    editingJobIndex = idx;
+    document.getElementById('createJobForm').querySelector('button[type="submit"]').textContent = 'Update Job';
+    window.scrollTo({top: document.getElementById('createJobForm').getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth'});
+  };
+  window.deleteEmployerJob = function(idx) {
+    if (!confirm('Are you sure you want to delete this job?')) return;
+    let jobs = getAllJobs();
+    jobs.splice(idx, 1);
+    setAllJobs(jobs);
+    renderEmployerJobs();
+    if (typeof renderJobs === 'function') renderJobs();
+    alert('Job deleted.');
+  };
+}
+
+// --- Patch renderJobs to use all jobs ---
+const origRenderJobs = typeof renderJobs === 'function' ? renderJobs : null;
 function renderJobs() {
   const jobsGrid = document.getElementById('jobsGrid');
   if (!jobsGrid) return;
@@ -245,8 +413,9 @@ function renderJobs() {
   const age = document.getElementById('ageFilter')?.value;
   const pay = document.getElementById('payFilter')?.value;
   const location = document.getElementById('locationFilter')?.value;
+  const sort = document.getElementById('sortFilter')?.value;
 
-  let filtered = jobsData.filter(job => {
+  let filtered = getAllJobs().filter(job => {
     if (search && !(
       job.title.toLowerCase().includes(search) ||
       job.company.toLowerCase().includes(search) ||
@@ -262,17 +431,66 @@ function renderJobs() {
     return true;
   });
 
-  jobsGrid.innerHTML = filtered.map(job => `
-    <div class="job-card">
-      <div class="job-rating">${renderStars(job.rating)}</div>
-      <h2>${job.title}</h2>
-      <p><strong>Company:</strong> ${job.company}</p>
-      <p><strong>Location:</strong> ${job.location}</p>
-      <p><strong>Pay:</strong> ${job.payDisplay}</p>
-      <p><strong>Minimum Age:</strong> ${job.minAge}+</p>
-      <button class="btn btn-apply" onclick="openApplicationModal('${job.title.replace(/'/g,"&#39;")}', '${job.company.replace(/'/g,"&#39;")}', '${job.location.replace(/'/g,"&#39;")}', '${job.payDisplay}')">Apply Now</button>
-    </div>
-  `).join('');
+  // Sort logic (same as before)
+  if (sort) {
+    filtered = filtered.slice(); // copy array
+    switch (sort) {
+      case 'alpha-asc':
+        filtered.sort((a, b) => a.title.localeCompare(b.title));
+        break;
+      case 'alpha-desc':
+        filtered.sort((a, b) => b.title.localeCompare(a.title));
+        break;
+      case 'rating-desc':
+        filtered.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+        break;
+      case 'rating-asc':
+        filtered.sort((a, b) => (a.rating || 0) - (b.rating || 0));
+        break;
+      case 'pay-desc':
+        filtered.sort((a, b) => (b.pay || 0) - (a.pay || 0));
+        break;
+      case 'pay-asc':
+        filtered.sort((a, b) => (a.pay || 0) - (b.pay || 0));
+        break;
+      case 'age-asc':
+        filtered.sort((a, b) => (a.minAge || 0) - (b.minAge || 0));
+        break;
+      case 'age-desc':
+        filtered.sort((a, b) => (b.minAge || 0) - (a.minAge || 0));
+        break;
+    }
+  }
+
+  const user = getCurrentUser();
+  jobsGrid.innerHTML = filtered.map(job => {
+    let alreadyApplied = false;
+    if (user && user.appliedJobs) {
+      alreadyApplied = user.appliedJobs.some(j => j.title === job.title && j.company === job.company);
+    }
+    let buttonHtml = '';
+    if (user) {
+      if (alreadyApplied) {
+        buttonHtml = '<button class="btn btn-apply" style="background:#bfc9d1; color:#fff; box-shadow:none; cursor:not-allowed; opacity:0.7;" disabled>Already Applied</button>';
+      } else {
+        buttonHtml = `<button class="btn btn-apply" onclick="requireLoginForApply('${job.title.replace(/'/g,"&#39;")}', '${job.company.replace(/'/g,"&#39;")}', '${job.location.replace(/'/g,"&#39;")}', '${job.payDisplay}')">Apply Now</button>`;
+      }
+    } else {
+      buttonHtml = `<button class="btn btn-apply" onclick="openApplicationModal('${job.title.replace(/'/g,"&#39;")}', '${job.company.replace(/'/g,"&#39;")}', '${job.location.replace(/'/g,"&#39;")}', '${job.payDisplay}')">Apply Now</button>`;
+    }
+    return `
+      <div class="job-card">
+        <div class="job-rating">${renderStars(job.rating)}</div>
+        <h2>${job.title}</h2>
+        <p><strong>Company:</strong> ${job.company}</p>
+        <p><strong>Location:</strong> ${job.location}</p>
+        <p><strong>Pay:</strong> ${job.payDisplay}</p>
+        <p><strong>Minimum Age:</strong> ${job.minAge}+</p>
+        <p>${job.description ? job.description : ''}</p>
+        ${buttonHtml}
+      </div>
+    `;
+  }).join('');
 }
 
 function renderStars(rating) {
@@ -307,6 +525,8 @@ function requireLoginForApply(jobTitle, company, location, pay) {
       setUsers(users);
       setCurrentUser(users[idx]);
       alert('Application submitted!');
+      if (typeof renderJobs === 'function') renderJobs();
+      if (typeof updateBestRatedJobButtons === 'function') updateBestRatedJobButtons();
     } else {
       alert('You have already applied for this job.');
     }
@@ -319,4 +539,79 @@ if (document.getElementById('jobsGrid')) {
   document.getElementById('ageFilter').addEventListener('change', renderJobs);
   document.getElementById('payFilter').addEventListener('change', renderJobs);
   document.getElementById('locationFilter').addEventListener('change', renderJobs);
+  const sortFilter = document.getElementById('sortFilter');
+  if (sortFilter) sortFilter.addEventListener('change', renderJobs);
 } 
+
+// --- HERO SLIDER LOGIC ---
+(function() {
+  const slides = document.querySelectorAll('.hero-slide');
+  const prevBtn = document.getElementById('heroPrev');
+  const nextBtn = document.getElementById('heroNext');
+  const dotsContainer = document.getElementById('heroDots');
+  let current = 0;
+  let autoSlideTimer = null;
+  if (!slides.length) return;
+
+  // Create dots
+  function renderDots() {
+    dotsContainer.innerHTML = '';
+    slides.forEach((_, i) => {
+      const dot = document.createElement('span');
+      dot.className = 'hero-slider-dot' + (i === current ? ' active' : '');
+      dot.addEventListener('click', () => goToSlide(i));
+      dotsContainer.appendChild(dot);
+    });
+  }
+
+  function showSlide(idx) {
+    slides.forEach((slide, i) => {
+      slide.classList.toggle('active', i === idx);
+    });
+    current = idx;
+    renderDots();
+  }
+
+  function goToSlide(idx) {
+    showSlide(idx);
+    resetAutoSlide();
+  }
+
+  function nextSlide() {
+    let idx = (current + 1) % slides.length;
+    showSlide(idx);
+    resetAutoSlide();
+  }
+
+  function prevSlide() {
+    let idx = (current - 1 + slides.length) % slides.length;
+    showSlide(idx);
+    resetAutoSlide();
+  }
+
+  function resetAutoSlide() {
+    if (autoSlideTimer) clearInterval(autoSlideTimer);
+    autoSlideTimer = setInterval(nextSlide, 6000);
+  }
+
+  if (nextBtn) nextBtn.addEventListener('click', nextSlide);
+  if (prevBtn) prevBtn.addEventListener('click', prevSlide);
+
+  // Touch swipe support
+  let startX = null;
+  slides.forEach(slide => {
+    slide.addEventListener('touchstart', e => {
+      startX = e.touches[0].clientX;
+    });
+    slide.addEventListener('touchend', e => {
+      if (startX === null) return;
+      let endX = e.changedTouches[0].clientX;
+      if (endX - startX > 50) prevSlide();
+      else if (startX - endX > 50) nextSlide();
+      startX = null;
+    });
+  });
+
+  showSlide(0);
+  resetAutoSlide();
+})(); 

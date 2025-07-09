@@ -18,6 +18,7 @@
         <li><a href="about.html">About</a></li>
         <li><a href="contact.html">Contact</a></li>
         <li id="dashboardNav" style="display:none;"><a href="dashboard.html">Dashboard</a></li>
+        <li id="adminNav" style="display:none;"><a href="admin.html">Admin Dashboard</a></li>
       </ul>
       <button class="menu-toggle" id="menuToggle" aria-label="Open menu">
         <span></span><span></span><span></span>
@@ -31,15 +32,84 @@
   </nav>
   <main class="about-main">
     <div class="container">
-      <h1>About TeenWork</h1>
-      <p class="about-mission">TeenWork is made to help young people find local work opportunities over the summer. We partner with employers and schools to create better futures for teenagers across the UK. Our mission is to empower teens with real-world experience, confidence, and independence.</p>
-      <section class="about-why">
-        <h2>Why Choose TeenWork?</h2>
-        <ul class="why-list">
-          <li><strong>Verified job postings:</strong> Every job is checked to ensure it’s suitable and safe for young people.</li>
-          <li><strong>Teen-friendly interface:</strong> Simple, clear, and designed for first-time job seekers.</li>
-          <li><strong>Built for UK employment law:</strong> We only list jobs that comply with UK rules for young workers.</li>
-        </ul>
+      <h1 class="about-title">About TeenWork</h1>
+      <p class="about-mission">TeenWork is the UK's dedicated platform for helping young people (ages 13–18) find safe, local work opportunities and build real-world skills. We partner with employers, schools, and communities to empower teens with confidence, independence, and a head start on their future careers.<br><br>Our mission is to make the world of work accessible, safe, and rewarding for every teen—no matter their background or experience.</p>
+
+      <hr class="about-divider">
+      <section class="about-section about-why">
+        <h2 class="about-title">Why Choose TeenWork?</h2>
+        <div class="why-points">
+          <div class="why-point"><strong>Verified job postings:</strong> Every job is checked to ensure it’s suitable and safe for young people.</div>
+          <div class="why-point"><strong>Teen-friendly interface:</strong> Simple, clear, and designed for first-time job seekers.</div>
+          <div class="why-point"><strong>Built for UK employment law:</strong> We only list jobs that comply with UK rules for young workers.</div>
+          <div class="why-point"><strong>Supportive community:</strong> We offer tips, courses, and resources to help you succeed.</div>
+          <div class="why-point"><strong>Free to use:</strong> No fees for teens or families—ever.</div>
+        </div>
+      </section>
+      <hr class="about-divider">
+      <section class="about-section about-features" style="background:var(--background); border-radius:var(--radius); margin:2.5em 0;">
+        <h2 class="about-title">Key Features</h2>
+        <div class="features-grid">
+          <div class="feature-card" style="background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow);">
+            <h3>Safe & Verified Jobs</h3>
+            <p>All listings are checked for safety and legitimacy, so you can apply with confidence.</p>
+          </div>
+          <div class="feature-card" style="background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow);">
+            <h3>Teen-Focused Design</h3>
+            <p>Our platform is built for young people, with simple navigation and clear information.</p>
+          </div>
+          <div class="feature-card" style="background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow);">
+            <h3>Application Tracking</h3>
+            <p>See all the jobs you’ve applied for in your personal dashboard.</p>
+          </div>
+          <div class="feature-card" style="background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow);">
+            <h3>Free Courses & Tips</h3>
+            <p>Access employability courses and expert advice to boost your skills and confidence.</p>
+          </div>
+          <div class="feature-card" style="background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow);">
+            <h3>Mobile Friendly</h3>
+            <p>Apply for jobs and track your progress on any device, anywhere.</p>
+          </div>
+        </div>
+      </section>
+      <hr class="about-divider">
+      <section class="about-section how-it-works" style="background:var(--background);">
+        <h2 class="about-title">How TeenWork Works</h2>
+        <div class="hiw-steps">
+          <div class="hiw-step">
+            <span class="hiw-number">1</span>
+            <h4>Browse Jobs</h4>
+            <p>Explore a wide range of summer and part-time jobs for teens across the UK, all in one place. Use filters to find jobs that match your age, location, and interests.</p>
+          </div>
+          <div class="hiw-step">
+            <span class="hiw-number">2</span>
+            <h4>Apply Easily</h4>
+            <p>Click “Apply Now” and fill out a simple form—no complicated CVs or cover letters needed. You’ll get a confirmation and can track your applications in your dashboard.</p>
+          </div>
+          <div class="hiw-step">
+            <span class="hiw-number">3</span>
+            <h4>Build Skills & Experience</h4>
+            <p>Start your first job, gain real-world skills, and earn your own money. Use our free courses and tips to stand out to employers and grow your confidence!</p>
+          </div>
+        </div>
+      </section>
+      <hr class="about-divider">
+      <section class="about-section about-who" style="background:#fafdff; border-radius:var(--radius); margin-top:2.5em;">
+        <h2 class="about-title">Who is TeenWork For?</h2>
+        <div class="who-grid" style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; margin-top:2.2em;">
+          <div class="who-card" style="background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow); padding:2rem 1.5rem; flex:1 1 220px; max-width:320px; text-align:center; display:flex; flex-direction:column; align-items:center;">
+            <h3 style="color:var(--primary); margin-bottom:0.5rem;">Teens (13–18)</h3>
+            <p>Looking for your first job, summer work, or a way to build your CV? TeenWork is for you!</p>
+          </div>
+          <div class="who-card" style="background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow); padding:2rem 1.5rem; flex:1 1 220px; max-width:320px; text-align:center; display:flex; flex-direction:column; align-items:center;">
+            <h3 style="color:var(--primary); margin-bottom:0.5rem;">Parents & Guardians</h3>
+            <p>Want peace of mind that your teen is applying for safe, age-appropriate jobs? We’ve got you covered.</p>
+          </div>
+          <div class="who-card" style="background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow); padding:2rem 1.5rem; flex:1 1 220px; max-width:320px; text-align:center; display:flex; flex-direction:column; align-items:center;">
+            <h3 style="color:var(--primary); margin-bottom:0.5rem;">Employers</h3>
+            <p>Need reliable, enthusiastic young workers? Post your jobs and connect with motivated teens in your area.</p>
+          </div>
+        </div>
       </section>
     </div>
   </main>
@@ -53,9 +123,9 @@
       <span class="close" id="closeLoginModal">&times;</span>
       <h2>Login</h2>
       <form id="loginForm">
-        <label for="loginUsername">Username or Email</label>
+        <label for="loginUsername">Username or Email</label><br>
         <input type="text" id="loginUsername" required>
-        <label for="loginPassword">Password</label>
+        <label for="loginPassword">Password</label><br>
         <input type="password" id="loginPassword" required>
         <button type="submit" class="btn btn-primary">Login</button>
       </form>
@@ -67,12 +137,16 @@
       <span class="close" id="closeSignupModal">&times;</span>
       <h2>Sign Up</h2>
       <form id="signupForm">
-        <label for="signupUsername">Username</label>
+        <label for="signupName">Name</label><br>
+        <input type="text" id="signupName" required>
+        <label for="signupUsername">Username</label><br>
         <input type="text" id="signupUsername" required>
-        <label for="signupEmail">Email</label>
+        <label for="signupEmail">Email</label><br>
         <input type="email" id="signupEmail" required>
-        <label for="signupPassword">Password</label>
+        <label for="signupPassword">Password</label><br>
         <input type="password" id="signupPassword" required>
+        <label for="signupConfirmPassword">Confirm Password</label><br>
+        <input type="password" id="signupConfirmPassword" required>
         <button type="submit" class="btn btn-primary">Sign Up</button>
       </form>
       <p>Already have an account? <a href="#" id="toLogin">Login</a></p>
