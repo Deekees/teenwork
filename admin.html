@@ -34,6 +34,12 @@
     <input id="adminUserSearch" type="text" placeholder="Search by username or email..." style="width:100%;max-width:350px;padding:0.7em 1em;margin-bottom:1.5em;border-radius:12px;border:1px solid #d0e6f7;box-shadow:var(--shadow);font-size:1.05em;">
     <div id="adminUsersList"></div>
   </main>
+  <div id="adminUserProfileModal" class="modal">
+    <div class="modal-content" style="max-width:420px; text-align:left;">
+      <span class="close" id="closeAdminUserProfileModal">&times;</span>
+      <div id="adminUserProfileContent"></div>
+    </div>
+  </div>
   <div id="deleteUserModal" class="modal">
     <div class="modal-content" style="max-width:340px; text-align:center;">
       <span class="close" id="closeDeleteUserModal">&times;</span>
@@ -43,6 +49,45 @@
       <button id="cancelDeleteUserBtn" style="background:transparent; color:#222; font-weight:600; border:2px solid #222; border-radius:var(--radius); padding:0.7rem 2rem; margin-top:1.2em; margin-left:1em; cursor:pointer;">No</button>
     </div>
   </div>
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-section">
+        <h3>TeenWork</h3>
+        <p style="margin:0.7em 0 0.5em 0; color:#3bb4e5; font-weight:600;">Find your first summer job.</p>
+        <p style="font-size:0.98em; color:#888;">&copy; 2025 TeenWork. All rights reserved.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Quick Links</h4>
+        <ul class="footer-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="jobs.html">Jobs</a></li>
+          <li><a href="courses.html">Courses</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="privacy.html">Privacy Policy</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Contact</h4>
+        <p style="font-size:0.98em;">Email: <a href="mailto:info@teenwork.com">info@teenwork.com</a></p>
+        <p style="font-size:0.98em;">Manchester, UK</p>
+      </div>
+      <div class="footer-section">
+        <h4>Follow Us</h4>
+        <div class="footer-socials">
+          <a href="#" aria-label="Instagram" style="margin-right:0.7em;">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.5" y2="6.5"/></svg>
+          </a>
+          <a href="#" aria-label="Twitter" style="margin-right:0.7em;">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53A4.48 4.48 0 0 0 22.4 1.64a9.09 9.09 0 0 1-2.88 1.1A4.48 4.48 0 0 0 16.11 0c-2.5 0-4.5 2.01-4.5 4.5 0 .35.04.69.11 1.02C7.69 5.4 4.07 3.7 1.64 1.15c-.38.65-.6 1.4-.6 2.2 0 1.52.77 2.86 1.95 3.65A4.48 4.48 0 0 1 .96 6v.06c0 2.13 1.52 3.91 3.54 4.31-.37.1-.76.16-1.16.16-.28 0-.55-.03-.81-.08.56 1.74 2.17 3.01 4.09 3.05A9.05 9.05 0 0 1 0 19.54a12.8 12.8 0 0 0 6.92 2.03c8.3 0 12.85-6.88 12.85-12.85 0-.2 0-.39-.01-.58A9.22 9.22 0 0 0 24 4.59a9.1 9.1 0 0 1-2.6.71z"/></svg>
+          </a>
+          <a href="#" aria-label="Facebook">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 2h-3a4 4 0 0 0-4 4v3H7v4h4v8h4v-8h3l1-4h-4V6a1 1 0 0 1 1-1h3z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
   <script src="main.js"></script>
   <script>
     // Redirect if not admin
@@ -63,11 +108,11 @@
       let html = `<table style="width:100%; border-collapse:separate; border-spacing:0 18px; margin-top:2em;">
         <tr style="background:#f8fbff;"><th style="padding:0.7em;">Username</th><th>Email</th><th>Role</th><th>Created</th><th>Action</th></tr>`;
       filtered.forEach((u, idx) => {
-        html += `<tr style="border-bottom:1px solid #e3f1fa; background:#fff; box-shadow:0 2px 8px #e3f1fa; border-radius:18px; overflow:hidden;">
+        html += `<tr style="border-bottom:1px solid #e3f1fa; background:#fff; box-shadow:0 2px 8px #e3f1fa; border-radius:18px; overflow:hidden; cursor:pointer;" onclick="showAdminUserProfile('${u.username}')">
           <td style="padding:1.2em 1.5em; border-radius:18px 0 0 18px;">${u.username}</td>
           <td style="padding:1.2em 1em;">${u.email}</td>
           <td style="padding:1.2em 1em;">
-            <select id="roleSelect${idx}" style="padding:0.3em 1em; border-radius:8px;">
+            <select id="roleSelect${idx}" style="padding:0.3em 1em; border-radius:8px;" onclick="event.stopPropagation();">
               <option value="user" ${u.role === 'user' || !u.role ? 'selected' : ''}>User</option>
               <option value="employer" ${u.role === 'employer' ? 'selected' : ''}>Employer</option>
               <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Admin</option>
@@ -75,8 +120,8 @@
           </td>
           <td style="padding:1.2em 1em;">${u.createdAt ? new Date(u.createdAt).toLocaleString() : '<span style=\'color:#aaa\'>(unknown)</span>'}</td>
           <td style="padding:1.2em 1em; border-radius:0 18px 18px 0;">
-            <button class="btn" onclick="saveUserRole(${users.indexOf(u)})">Save</button>
-            <button class="btn" style="background:#e74c3c; color:#fff; margin-left:0.5em;" onclick="showDeleteUserModal(${users.indexOf(u)})">Delete</button>
+            <button class="btn" onclick="event.stopPropagation(); saveUserRole(${idx}, '${u.username}')">Save</button>
+            <button class="btn" style="background:#e74c3c; color:#fff; margin-left:0.5em;" onclick="event.stopPropagation(); showDeleteUserModal(${users.indexOf(u)})">Delete</button>
           </td>
         </tr>`;
       });
@@ -85,12 +130,15 @@
     }
     renderAdminUsers();
     document.getElementById('adminUserSearch').addEventListener('input', renderAdminUsers);
-    window.saveUserRole = function(idx) {
+    window.saveUserRole = function(idx, username) {
       let users = JSON.parse(localStorage.getItem('users') || '[]');
       const select = document.getElementById('roleSelect' + idx);
-      users[idx].role = select.value;
-      localStorage.setItem('users', JSON.stringify(users));
-      renderAdminUsers();
+      const userIdx = users.findIndex(u => u.username === username);
+      if (userIdx !== -1) {
+        users[userIdx].role = select.value;
+        localStorage.setItem('users', JSON.stringify(users));
+        renderAdminUsers();
+      }
     };
     window.showDeleteUserModal = function(idx) {
       deleteUserIdx = idx;
@@ -117,6 +165,51 @@
       document.getElementById('deleteUserModal').classList.remove('active');
       document.body.style.overflow = '';
       deleteUserIdx = null;
+    };
+
+    function showAdminUserProfile(username) {
+      let users = JSON.parse(localStorage.getItem('users') || '[]');
+      let user = users.find(u => u.username === username);
+      if (!user) return;
+      let html = `<h2 style='color:#3bb4e5; margin-bottom:0.7em;'>${user.name || user.username}</h2>`;
+      if (user.role === 'employer') {
+        html += `<p><strong>Company:</strong> ${user.company || user.name || user.username}</p>`;
+        html += `<p><strong>Contact Email:</strong> ${user.email}</p>`;
+        html += `<p><strong>Phone:</strong> ${user.phone ? user.phone : '<span style=\'color:#aaa\'>(not set)</span>'}</p>`;
+        html += `<p><strong>Address:</strong> ${user.address ? user.address : '<span style=\'color:#aaa\'>(not set)</span>'}</p>`;
+        html += `<hr style='margin:1.2em 0;'>`;
+        html += `<h3 style='color:#4be38a;'>Job Posts</h3>`;
+        let jobs = JSON.parse(localStorage.getItem('allJobs') || '[]');
+        let myJobs = jobs.filter(j => j.createdBy === user.username);
+        if (myJobs.length === 0) {
+          html += `<p style='color:#888;'>No job posts found.</p>`;
+        } else {
+          html += `<ul style='padding-left:1.2em;'>`;
+          myJobs.forEach(job => {
+            html += `<li style='margin-bottom:0.7em;'><strong>${job.title}</strong> at ${job.company} <br><span style='color:#888;'>${job.location} | £${job.pay}/hr | Min Age: ${job.minAge}+</span></li>`;
+          });
+          html += `</ul>`;
+        }
+      } else {
+        html += `<p><strong>Username:</strong> ${user.username}</p>`;
+        html += `<p><strong>Email:</strong> ${user.email}</p>`;
+        html += `<p><strong>Role:</strong> ${user.role || 'user'}</p>`;
+        html += `<p><strong>Mobile:</strong> ${user.mobile ? user.mobile : '<span style=\'color:#aaa\'>(not set)</span>'}</p>`;
+        html += `<p><strong>Age:</strong> ${user.age ? user.age : '<span style=\'color:#aaa\'>(not set)</span>'}</p>`;
+        html += `<p><strong>Location:</strong> ${user.location ? user.location : '<span style=\'color:#aaa\'>(not set)</span>'}</p>`;
+        html += `<p><strong>About Me:</strong><br>${user.about ? user.about : '<span style=\'color:#aaa\'>(not set)</span>'}</p>`;
+        html += `<p><strong>Skills:</strong> ${user.skills ? user.skills : '<span style=\'color:#aaa\'>(not set)</span>'}</p>`;
+        html += `<p><strong>Interests:</strong> ${user.interests ? user.interests : '<span style=\'color:#aaa\'>(not set)</span>'}</p>`;
+        html += `<p><strong>Education:</strong> ${user.education ? user.education : '<span style=\'color:#aaa\'>(not set)</span>'}</p>`;
+        html += `<p><strong>Achievements:</strong> ${user.achievements ? user.achievements : '<span style=\'color:#aaa\'>(not set)</span>'}</p>`;
+      }
+      document.getElementById('adminUserProfileContent').innerHTML = html;
+      document.getElementById('adminUserProfileModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    document.getElementById('closeAdminUserProfileModal').onclick = function() {
+      document.getElementById('adminUserProfileModal').classList.remove('active');
+      document.body.style.overflow = '';
     };
   </script>
 </body>

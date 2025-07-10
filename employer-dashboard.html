@@ -29,27 +29,34 @@
       </div>
     </div>
   </nav>
-  <main class="container" style="margin-top:2em;">
+  <main class="container" style="margin-top:2em; padding-bottom:3.5rem;">
     <h1>Employer Dashboard</h1>
     <div class="employer-dashboard-flex" style="display:flex; gap:2.5rem; align-items:flex-start; margin-top:2em;">
-      <section class="employer-create-job" style="flex:1 1 0; max-width:33%; background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow); padding:2rem 1.5rem; min-width:0;">
-        <h2>Create a Job Listing</h2>
-        <form id="createJobForm">
-          <label for="jobTitle">Job Title</label>
-          <input type="text" id="jobTitle" required>
-          <label for="jobCompany">Company</label>
-          <input type="text" id="jobCompany" required>
-          <label for="jobLocation">Location</label>
-          <input type="text" id="jobLocation" required>
-          <label for="jobPay">Pay (e.g. £8.50/hr)</label>
-          <input type="text" id="jobPay" required>
-          <label for="jobMinAge">Minimum Age</label>
-          <input type="number" id="jobMinAge" min="13" max="25" required>
-          <label for="jobDescription">Description</label>
-          <textarea id="jobDescription" rows="3" required></textarea>
-          <button type="submit" class="btn btn-primary" style="margin-top:1.2em;">Create Job</button>
-        </form>
-      </section>
+      <div style="flex:1 1 0; max-width:33%; min-width:0; display:flex; flex-direction:column; gap:2em;">
+        <section class="employer-create-job" style="background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow); padding:2rem 1.5rem;">
+          <h2>Create a Job Listing</h2>
+          <form id="createJobForm" class="contact-form">
+            <label for="jobTitle">Job Title</label>
+            <input type="text" id="jobTitle" required>
+            <label for="jobLocation">Location</label>
+            <input type="text" id="jobLocation" required>
+            <label for="jobPay">Pay (e.g. £8.50/hr)</label>
+            <input type="text" id="jobPay" required>
+            <label for="jobMinAge">Minimum Age</label>
+            <input type="number" id="jobMinAge" min="13" max="25" required>
+            <label for="jobClosingDate">Closing Date</label>
+            <input type="date" id="jobClosingDate" required>
+            <label for="jobDescription">Description</label>
+            <textarea id="jobDescription" rows="3" required></textarea>
+            <button type="submit" class="btn btn-primary" style="margin-top:1.2em;">Create Job</button>
+          </form>
+        </section>
+        <section class="employer-profile" style="background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow); padding:2rem 1.5rem;">
+          <h2>Your Profile</h2>
+          <div class="profile-card" id="employerProfilePreview"></div>
+          <button id="editEmployerProfileBtn" class="btn" style="margin-top:1.2em;">Edit Profile</button>
+        </section>
+      </div>
       <section class="employer-job-listings" style="flex:2 1 0; max-width:67%; background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow); padding:2rem 1.5rem; min-width:0;">
         <h2 style="margin-bottom:1.5em;">Your Job Listings</h2>
         <div id="employerJobsList">
@@ -58,6 +65,208 @@
       </section>
     </div>
   </main>
+  <div id="editEmployerProfileModal" class="modal">
+    <div class="modal-content" style="max-width:400px; text-align:left;">
+      <span class="close" id="closeEditEmployerProfileModal">&times;</span>
+      <h2>Edit Profile</h2>
+      <form id="editEmployerProfileForm">
+        <label for="editEmployerCompany">Company</label>
+        <input type="text" id="editEmployerCompany" required>
+        <label for="editEmployerEmail">Contact Email</label>
+        <input type="email" id="editEmployerEmail" required>
+        <label for="editEmployerPhone">Phone</label>
+        <input type="tel" id="editEmployerPhone" placeholder="Your phone number">
+        <label for="editEmployerAddress">Address</label>
+        <input type="text" id="editEmployerAddress" placeholder="Your address">
+        <div style="display:flex; gap:1em; margin-top:1.5em;">
+          <button type="submit" class="btn btn-primary">Save</button>
+          <button type="button" id="cancelEditEmployerProfileBtn" class="btn">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div id="editJobModal" class="modal">
+    <div class="modal-content" style="max-width:420px;">
+      <span class="close" id="closeEditJobModal">&times;</span>
+      <h2>Edit Job Listing</h2>
+      <form id="editJobForm" class="contact-form">
+        <label for="editJobTitle">Job Title</label>
+        <input type="text" id="editJobTitle" required>
+        <label for="editJobCompany">Company</label>
+        <input type="text" id="editJobCompany" required>
+        <label for="editJobLocation">Location</label>
+        <input type="text" id="editJobLocation" required>
+        <label for="editJobPay">Pay (e.g. £8.50/hr)</label>
+        <input type="text" id="editJobPay" required>
+        <label for="editJobMinAge">Minimum Age</label>
+        <input type="number" id="editJobMinAge" min="13" max="25" required>
+        <label for="editJobClosingDate">Closing Date</label>
+        <input type="date" id="editJobClosingDate" required>
+        <label for="editJobDescription">Description</label>
+        <textarea id="editJobDescription" rows="3" required></textarea>
+        <button type="submit" class="btn btn-primary" style="margin-top:1.2em;">Save Changes</button>
+      </form>
+    </div>
+  </div>
+  <div id="jobCreatedModal" class="modal">
+    <div class="modal-content" style="max-width:340px; text-align:center;">
+      <span class="close" id="closeJobCreatedModal">&times;</span>
+      <h2>Job Created!</h2>
+      <p>Your job listing has been successfully created and is now live.</p>
+      <button class="btn btn-primary" id="closeJobCreatedBtn">Close</button>
+    </div>
+  </div>
+  <div id="removeEmployerJobModal" class="modal">
+    <div class="modal-content" style="max-width:340px; text-align:center;">
+      <span class="close" id="closeRemoveEmployerJobModal">&times;</span>
+      <h2>Remove Job Listing</h2>
+      <p>Are you sure you want to delete this job listing?</p>
+      <div style="display:flex; flex-direction:row; justify-content:center; align-items:center; margin-top:1.2em; gap:1em;">
+        <button id="confirmRemoveEmployerJobBtn" class="btn" style="background:#e74c3c; color:#fff;">Yes</button>
+        <button id="cancelRemoveEmployerJobBtn" class="btn">No</button>
+      </div>
+    </div>
+  </div>
+  <div id="viewApplicantsModal" class="modal">
+    <div class="modal-content" style="max-width:800px; min-height:400px; display:flex; flex-direction:row; padding:0;">
+      <div style="flex:1; background:#f8fbff; border-right:1px solid #e3f1fa; min-width:220px; max-width:260px; overflow-y:auto; padding:2em 1em 2em 1.5em;">
+        <h3 style="margin-bottom:1.2em; color:#3bb4e5;">Applicants</h3>
+        <ul id="applicantList" style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:0.7em;"></ul>
+      </div>
+      <div style="flex:2; padding:2em 2em 2em 2em; min-width:0;">
+        <span class="close" id="closeViewApplicantsModal" style="float:right; font-size:2rem; cursor:pointer; margin-top:-0.5em; margin-right:-0.5em;">&times;</span>
+        <div id="applicantProfile" style="margin-top:1.5em;"></div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-spacer"></div>
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-section">
+        <h3>TeenWork</h3>
+        <p style="margin:0.7em 0 0.5em 0; color:#3bb4e5; font-weight:600;">Find your first summer job.</p>
+        <p style="font-size:0.98em; color:#888;">&copy; 2025 TeenWork. All rights reserved.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Quick Links</h4>
+        <ul class="footer-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="jobs.html">Jobs</a></li>
+          <li><a href="courses.html">Courses</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="privacy.html">Privacy Policy</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Contact</h4>
+        <p style="font-size:0.98em;">Email: <a href="mailto:info@teenwork.com">info@teenwork.com</a></p>
+        <p style="font-size:0.98em;">Manchester, UK</p>
+      </div>
+      <div class="footer-section">
+        <h4>Follow Us</h4>
+        <div class="footer-socials">
+          <a href="#" aria-label="Instagram" style="margin-right:0.7em;">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.5" y2="6.5"/></svg>
+          </a>
+          <a href="#" aria-label="Twitter" style="margin-right:0.7em;">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53A4.48 4.48 0 0 0 22.4 1.64a9.09 9.09 0 0 1-2.88 1.1A4.48 4.48 0 0 0 16.11 0c-2.5 0-4.5 2.01-4.5 4.5 0 .35.04.69.11 1.02C7.69 5.4 4.07 3.7 1.64 1.15c-.38.65-.6 1.4-.6 2.2 0 1.52.77 2.86 1.95 3.65A4.48 4.48 0 0 1 .96 6v.06c0 2.13 1.52 3.91 3.54 4.31-.37.1-.76.16-1.16.16-.28 0-.55-.03-.81-.08.56 1.74 2.17 3.01 4.09 3.05A9.05 9.05 0 0 1 0 19.54a12.8 12.8 0 0 0 6.92 2.03c8.3 0 12.85-6.88 12.85-12.85 0-.2 0-.39-.01-.58A9.22 9.22 0 0 0 24 4.59a9.1 9.1 0 0 1-2.6.71z"/></svg>
+          </a>
+          <a href="#" aria-label="Facebook">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 2h-3a4 4 0 0 0-4 4v3H7v4h4v8h4v-8h3l1-4h-4V6a1 1 0 0 1 1-1h3z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
   <script src="main.js"></script>
+  <script>
+document.addEventListener('DOMContentLoaded', function() {
+  // ... existing code ...
+  function renderEmployerProfile() {
+    const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
+    if (!user) return;
+    document.getElementById('employerProfilePreview').innerHTML = `
+      <p><strong>Company:</strong> ${user.company || '<span style=\'color:#aaa\'>(not set)</span>'}</p>
+      <p><strong>Contact Email:</strong> ${user.email}</p>
+      <p><strong>Phone:</strong> ${user.phone ? user.phone : '<span style=\'color:#aaa\'>(not set)</span>'}</p>
+      <p><strong>Address:</strong> ${user.address ? user.address : '<span style=\'color:#aaa\'>(not set)</span>'}</p>
+    `;
+  }
+  renderEmployerProfile();
+  document.getElementById('editEmployerProfileBtn').onclick = function() {
+    const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
+    document.getElementById('editEmployerCompany').value = user.company || '';
+    document.getElementById('editEmployerEmail').value = user.email || '';
+    document.getElementById('editEmployerPhone').value = user.phone || '';
+    document.getElementById('editEmployerAddress').value = user.address || '';
+    document.getElementById('editEmployerProfileModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  };
+  document.getElementById('closeEditEmployerProfileModal').onclick = function() {
+    document.getElementById('editEmployerProfileModal').classList.remove('active');
+    document.body.style.overflow = '';
+  };
+  document.getElementById('cancelEditEmployerProfileBtn').onclick = function() {
+    document.getElementById('editEmployerProfileModal').classList.remove('active');
+    document.body.style.overflow = '';
+  };
+  document.getElementById('editEmployerProfileForm').onsubmit = function(e) {
+    e.preventDefault();
+    let user = JSON.parse(localStorage.getItem('currentUser') || 'null');
+    user.company = document.getElementById('editEmployerCompany').value;
+    user.email = document.getElementById('editEmployerEmail').value;
+    user.phone = document.getElementById('editEmployerPhone').value;
+    user.address = document.getElementById('editEmployerAddress').value;
+    localStorage.setItem('currentUser', JSON.stringify(user));
+    let users = JSON.parse(localStorage.getItem('users') || '[]');
+    let idx = users.findIndex(u => u.username === user.username);
+    if (idx !== -1) {
+      users[idx] = user;
+      localStorage.setItem('users', JSON.stringify(users));
+    }
+    renderEmployerProfile();
+    document.getElementById('editEmployerProfileModal').classList.remove('active');
+    document.body.style.overflow = '';
+  };
+  document.getElementById('createJobForm').onsubmit = function(e) {
+    e.preventDefault();
+    const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
+    if (!user || user.role !== 'employer') {
+      alert('Only employers can create jobs.');
+      return;
+    }
+    const title = document.getElementById('jobTitle').value.trim();
+    const company = user.company || '';
+    const location = document.getElementById('jobLocation').value.trim();
+    const pay = document.getElementById('jobPay').value.trim();
+    const minAge = parseInt(document.getElementById('jobMinAge').value);
+    const closingDate = document.getElementById('jobClosingDate').value;
+    const description = document.getElementById('jobDescription').value.trim();
+    if (!title || !company || !location || !pay || !minAge || !closingDate || !description) {
+      alert('Please fill in all fields.');
+      return;
+    }
+    let jobs = getAllJobs();
+    const newJob = {
+      title,
+      company,
+      location,
+      pay: parseFloat(pay.replace(/[^\d.]/g, '')),
+      payDisplay: pay,
+      minAge,
+      closingDate,
+      description,
+      createdBy: user.username,
+      createdAt: new Date().toISOString(),
+    };
+    jobs.push(newJob);
+    setAllJobs(jobs);
+    document.getElementById('createJobForm').reset();
+    renderEmployerJobs();
+    showJobCreatedModal();
+  };
+});
+</script>
 </body>
 </html> 

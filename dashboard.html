@@ -29,7 +29,7 @@
       </div>
     </div>
   </nav>
-  <main class="container" style="margin-top:2em;">
+  <main class="container" style="margin-top:2em; padding-bottom:3.5rem;">
     <h1 id="welcomeMsg">Welcome!</h1>
     <div class="dashboard-flex">
       <section class="dashboard-jobs">
@@ -43,6 +43,46 @@
       </section>
     </div>
   </main>
+  <div class="footer-spacer"></div>
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-section">
+        <h3>TeenWork</h3>
+        <p style="margin:0.7em 0 0.5em 0; color:#3bb4e5; font-weight:600;">Find your first summer job.</p>
+        <p style="font-size:0.98em; color:#888;">&copy; 2025 TeenWork. All rights reserved.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Quick Links</h4>
+        <ul class="footer-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="jobs.html">Jobs</a></li>
+          <li><a href="courses.html">Courses</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="privacy.html">Privacy Policy</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Contact</h4>
+        <p style="font-size:0.98em;">Email: <a href="mailto:info@teenwork.com">info@teenwork.com</a></p>
+        <p style="font-size:0.98em;">Manchester, UK</p>
+      </div>
+      <div class="footer-section">
+        <h4>Follow Us</h4>
+        <div class="footer-socials">
+          <a href="#" aria-label="Instagram" style="margin-right:0.7em;">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.5" y2="6.5"/></svg>
+          </a>
+          <a href="#" aria-label="Twitter" style="margin-right:0.7em;">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53A4.48 4.48 0 0 0 22.4 1.64a9.09 9.09 0 0 1-2.88 1.1A4.48 4.48 0 0 0 16.11 0c-2.5 0-4.5 2.01-4.5 4.5 0 .35.04.69.11 1.02C7.69 5.4 4.07 3.7 1.64 1.15c-.38.65-.6 1.4-.6 2.2 0 1.52.77 2.86 1.95 3.65A4.48 4.48 0 0 1 .96 6v.06c0 2.13 1.52 3.91 3.54 4.31-.37.1-.76.16-1.16.16-.28 0-.55-.03-.81-.08.56 1.74 2.17 3.01 4.09 3.05A9.05 9.05 0 0 1 0 19.54a12.8 12.8 0 0 0 6.92 2.03c8.3 0 12.85-6.88 12.85-12.85 0-.2 0-.39-.01-.58A9.22 9.22 0 0 0 24 4.59a9.1 9.1 0 0 1-2.6.71z"/></svg>
+          </a>
+          <a href="#" aria-label="Facebook">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 2h-3a4 4 0 0 0-4 4v3H7v4h4v8h4v-8h3l1-4h-4V6a1 1 0 0 1 1-1h3z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
   <div id="loginModal" class="modal">
     <div class="modal-content">
       <span class="close" id="closeLoginModal">&times;</span>
@@ -95,6 +135,8 @@
       <form id="editProfileForm">
         <label for="editAge">Age</label>
         <input type="number" id="editAge" min="10" max="25" placeholder="Your age">
+        <label for="editMobile">Mobile Number</label>
+        <input type="tel" id="editMobile" placeholder="Your mobile number">
         <label for="editLocation">Location</label>
         <input type="text" id="editLocation" placeholder="Your location">
         <label for="editAbout">About Me</label>
@@ -117,7 +159,7 @@
   <script src="main.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      // Redirect if not logged in
+    // Redirect if not logged in
       const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
       if (!user) {
         window.location.href = 'index.html';
@@ -126,120 +168,123 @@
       function renderDashboardJobs() {
         const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
         if (!user) return;
-        document.getElementById('welcomeMsg').textContent = `Welcome, ${user.username}!`;
-        document.getElementById('profileInfo').innerHTML = `
-          <div class="profile-card">
-            <p><strong>Name:</strong> ${user.name || '<span style=\'color:#aaa\'>(not set)</span>'}</p>
-            <p><strong>Username:</strong> ${user.username}</p>
-            <p><strong>Email:</strong> ${user.email}</p>
-            <p><strong>Age:</strong> ${user.age ? user.age : '<span style=\'color:#aaa\'>(not set)</span>'}</p>
-            <p><strong>Location:</strong> ${user.location ? user.location : '<span style=\'color:#aaa\'>(not set)</span>'}</p>
-            <p><strong>About Me:</strong><br>${user.about ? user.about : '<span style=\'color:#aaa\'>(not set)</span>'}</p>
-            <p><strong>Skills:</strong> ${user.skills ? user.skills : '<span style=\'color:#aaa\'>(not set)</span>'}</p>
-            <p><strong>Interests:</strong> ${user.interests ? user.interests : '<span style=\'color:#aaa\'>(not set)</span>'}</p>
-            <p><strong>Education:</strong> ${user.education ? user.education : '<span style=\'color:#aaa\'>(not set)</span>'}</p>
-            <p><strong>Achievements:</strong> ${user.achievements ? user.achievements : '<span style=\'color:#aaa\'>(not set)</span>'}</p>
+      document.getElementById('welcomeMsg').textContent = `Welcome, ${user.username}!`;
+      document.getElementById('profileInfo').innerHTML = `
+        <div class="profile-card">
+          <p><strong>Name:</strong> ${user.name || '<span style=\'color:#aaa\'>(not set)</span>'}</p>
+          <p><strong>Username:</strong> ${user.username}</p>
+          <p><strong>Email:</strong> ${user.email}</p>
+          <p><strong>Mobile:</strong> ${user.mobile ? user.mobile : '<span style=\'color:#aaa\'>(not set)</span>'}</p>
+          <p><strong>Age:</strong> ${user.age ? user.age : '<span style=\'color:#aaa\'>(not set)</span>'}</p>
+          <p><strong>Location:</strong> ${user.location ? user.location : '<span style=\'color:#aaa\'>(not set)</span>'}</p>
+          <p><strong>About Me:</strong><br>${user.about ? user.about : '<span style=\'color:#aaa\'>(not set)</span>'}</p>
+          <p><strong>Skills:</strong> ${user.skills ? user.skills : '<span style=\'color:#aaa\'>(not set)</span>'}</p>
+          <p><strong>Interests:</strong> ${user.interests ? user.interests : '<span style=\'color:#aaa\'>(not set)</span>'}</p>
+          <p><strong>Education:</strong> ${user.education ? user.education : '<span style=\'color:#aaa\'>(not set)</span>'}</p>
+          <p><strong>Achievements:</strong> ${user.achievements ? user.achievements : '<span style=\'color:#aaa\'>(not set)</span>'}</p>
+        </div>
+      `;
+      const jobs = user.appliedJobs || [];
+      const list = document.getElementById('appliedJobsList');
+      if (jobs.length === 0) {
+        list.innerHTML = '<p>You have not applied for any jobs yet.</p>';
+      } else {
+        list.innerHTML = jobs.map((j, idx) => `
+          <div class="job-card">
+            <h3>${j.title}</h3>
+            <p><strong>Company:</strong> ${j.company}</p>
+            <p><strong>Location:</strong> ${j.location}</p>
+            <p><strong>Pay:</strong> ${j.pay}</p>
+            <p><small>Applied: ${new Date(j.date).toLocaleString()}</small></p>
+            <button class="btn" style="background:#e74c3c; color:#fff; margin-top:0.7em;" onclick="showRemoveJobModal(${idx})">Remove</button>
           </div>
-        `;
-        const jobs = user.appliedJobs || [];
-        const list = document.getElementById('appliedJobsList');
-        if (jobs.length === 0) {
-          list.innerHTML = '<p>You have not applied for any jobs yet.</p>';
-        } else {
-          list.innerHTML = jobs.map((j, idx) => `
-            <div class="job-card">
-              <h3>${j.title}</h3>
-              <p><strong>Company:</strong> ${j.company}</p>
-              <p><strong>Location:</strong> ${j.location}</p>
-              <p><strong>Pay:</strong> ${j.pay}</p>
-              <p><small>Applied: ${new Date(j.date).toLocaleString()}</small></p>
-              <button class="btn" style="background:#e74c3c; color:#fff; margin-top:0.7em;" onclick="showRemoveJobModal(${idx})">Remove</button>
-            </div>
-          `).join('');
-        }
+        `).join('');
       }
+    }
       window.renderDashboardJobs = renderDashboardJobs;
-      renderDashboardJobs();
+    renderDashboardJobs();
 
-      let jobToRemoveIdx = null;
+    let jobToRemoveIdx = null;
       window.showRemoveJobModal = function(idx) {
-        jobToRemoveIdx = idx;
-        document.getElementById('removeJobModal').classList.add('active');
-        document.body.style.overflow = 'hidden';
+      jobToRemoveIdx = idx;
+      document.getElementById('removeJobModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
       };
-      document.getElementById('closeRemoveJobModal').onclick = function() {
-        document.getElementById('removeJobModal').classList.remove('active');
-        document.body.style.overflow = '';
-        jobToRemoveIdx = null;
-      };
-      document.getElementById('confirmRemoveJobBtn').onclick = function() {
-        if (jobToRemoveIdx !== null) {
+    document.getElementById('closeRemoveJobModal').onclick = function() {
+      document.getElementById('removeJobModal').classList.remove('active');
+      document.body.style.overflow = '';
+      jobToRemoveIdx = null;
+    };
+    document.getElementById('confirmRemoveJobBtn').onclick = function() {
+      if (jobToRemoveIdx !== null) {
           let user = JSON.parse(localStorage.getItem('currentUser') || 'null');
-          if (user && user.appliedJobs) {
-            user.appliedJobs.splice(jobToRemoveIdx, 1);
-            localStorage.setItem('currentUser', JSON.stringify(user));
-            let users = JSON.parse(localStorage.getItem('users') || '[]');
-            let idx = users.findIndex(u => u.username === user.username);
-            if (idx !== -1) {
-              users[idx] = user;
-              localStorage.setItem('users', JSON.stringify(users));
-            }
+        if (user && user.appliedJobs) {
+          user.appliedJobs.splice(jobToRemoveIdx, 1);
+          localStorage.setItem('currentUser', JSON.stringify(user));
+          let users = JSON.parse(localStorage.getItem('users') || '[]');
+          let idx = users.findIndex(u => u.username === user.username);
+          if (idx !== -1) {
+            users[idx] = user;
+            localStorage.setItem('users', JSON.stringify(users));
+          }
             // Re-fetch the updated user and re-render immediately
             user = JSON.parse(localStorage.getItem('currentUser') || 'null');
-            renderDashboardJobs();
-            if (typeof renderJobs === 'function') renderJobs();
-            if (typeof updateBestRatedJobButtons === 'function') updateBestRatedJobButtons();
-          }
+          renderDashboardJobs();
+          if (typeof renderJobs === 'function') renderJobs();
+          if (typeof updateBestRatedJobButtons === 'function') updateBestRatedJobButtons();
         }
-        document.getElementById('removeJobModal').classList.remove('active');
-        document.body.style.overflow = '';
-        jobToRemoveIdx = null;
-      };
-      document.getElementById('cancelRemoveJobBtn').onclick = function() {
-        document.getElementById('removeJobModal').classList.remove('active');
-        document.body.style.overflow = '';
-        jobToRemoveIdx = null;
-      };
-      document.getElementById('editProfileBtn').onclick = function() {
-        document.getElementById('editAge').value = user.age || '';
-        document.getElementById('editLocation').value = user.location || '';
-        document.getElementById('editAbout').value = user.about || '';
-        document.getElementById('editSkills').value = user.skills || '';
-        document.getElementById('editInterests').value = user.interests || '';
-        document.getElementById('editEducation').value = user.education || '';
-        document.getElementById('editAchievements').value = user.achievements || '';
-        document.getElementById('editProfileModal').classList.add('active');
-        document.body.style.overflow = 'hidden';
-      };
-      document.getElementById('closeEditProfileModal').onclick = function() {
-        document.getElementById('editProfileModal').classList.remove('active');
-        document.body.style.overflow = '';
-      };
-      document.getElementById('cancelEditProfileBtn').onclick = function() {
-        document.getElementById('editProfileModal').classList.remove('active');
-        document.body.style.overflow = '';
-      };
-      document.getElementById('editProfileForm').onsubmit = function(e) {
-        e.preventDefault();
-        const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
-        user.age = document.getElementById('editAge').value;
-        user.location = document.getElementById('editLocation').value;
-        user.about = document.getElementById('editAbout').value;
-        user.skills = document.getElementById('editSkills').value;
-        user.interests = document.getElementById('editInterests').value;
-        user.education = document.getElementById('editEducation').value;
-        user.achievements = document.getElementById('editAchievements').value;
-        localStorage.setItem('currentUser', JSON.stringify(user));
-        let users = JSON.parse(localStorage.getItem('users') || '[]');
-        let idx = users.findIndex(u => u.username === user.username);
-        if (idx !== -1) {
-          users[idx] = user;
-          localStorage.setItem('users', JSON.stringify(users));
-        }
-        renderDashboardJobs();
-        document.getElementById('editProfileModal').classList.remove('active');
-        document.body.style.overflow = '';
-      };
+      }
+      document.getElementById('removeJobModal').classList.remove('active');
+      document.body.style.overflow = '';
+      jobToRemoveIdx = null;
+    };
+    document.getElementById('cancelRemoveJobBtn').onclick = function() {
+      document.getElementById('removeJobModal').classList.remove('active');
+      document.body.style.overflow = '';
+      jobToRemoveIdx = null;
+    };
+    document.getElementById('editProfileBtn').onclick = function() {
+      document.getElementById('editAge').value = user.age || '';
+      document.getElementById('editMobile').value = user.mobile || '';
+      document.getElementById('editLocation').value = user.location || '';
+      document.getElementById('editAbout').value = user.about || '';
+      document.getElementById('editSkills').value = user.skills || '';
+      document.getElementById('editInterests').value = user.interests || '';
+      document.getElementById('editEducation').value = user.education || '';
+      document.getElementById('editAchievements').value = user.achievements || '';
+      document.getElementById('editProfileModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    };
+    document.getElementById('closeEditProfileModal').onclick = function() {
+      document.getElementById('editProfileModal').classList.remove('active');
+      document.body.style.overflow = '';
+    };
+    document.getElementById('cancelEditProfileBtn').onclick = function() {
+      document.getElementById('editProfileModal').classList.remove('active');
+      document.body.style.overflow = '';
+    };
+    document.getElementById('editProfileForm').onsubmit = function(e) {
+      e.preventDefault();
+      const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
+      user.age = document.getElementById('editAge').value;
+      user.mobile = document.getElementById('editMobile').value;
+      user.location = document.getElementById('editLocation').value;
+      user.about = document.getElementById('editAbout').value;
+      user.skills = document.getElementById('editSkills').value;
+      user.interests = document.getElementById('editInterests').value;
+      user.education = document.getElementById('editEducation').value;
+      user.achievements = document.getElementById('editAchievements').value;
+      localStorage.setItem('currentUser', JSON.stringify(user));
+      let users = JSON.parse(localStorage.getItem('users') || '[]');
+      let idx = users.findIndex(u => u.username === user.username);
+      if (idx !== -1) {
+        users[idx] = user;
+        localStorage.setItem('users', JSON.stringify(users));
+      }
+      renderDashboardJobs();
+      document.getElementById('editProfileModal').classList.remove('active');
+      document.body.style.overflow = '';
+    };
     });
   </script>
 </body>

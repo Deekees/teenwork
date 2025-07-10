@@ -16,7 +16,7 @@ function closeApplicationModal() {
 function submitApplication(e) {
   e.preventDefault();
   closeApplicationModal();
-  alert('Thank you for applying! This is a demo.');
+  showApplicationSuccessModal();
 }
 
 // Contact form alert
@@ -93,6 +93,7 @@ function getCurrentUser() {
 function logout() {
   localStorage.removeItem('currentUser');
   updateAuthUI();
+  window.location.href = 'index.html';
 }
 if (logoutBtn) logoutBtn.onclick = logout;
 
@@ -102,14 +103,20 @@ function updateAuthUI() {
     if (loginBtn) loginBtn.style.display = 'none';
     if (signupBtn) signupBtn.style.display = 'none';
     if (logoutBtn) logoutBtn.style.display = '';
-    if (dashboardNav) dashboardNav.style.display = '';
-    // If employer, change dashboard link to employer-dashboard.html
-    if (dashboardNav && user.role === 'employer') {
-      dashboardNav.querySelector('a').setAttribute('href', 'employer-dashboard.html');
-      dashboardNav.querySelector('a').textContent = 'Employer Dashboard';
-    } else if (dashboardNav) {
-      dashboardNav.querySelector('a').setAttribute('href', 'dashboard.html');
-      dashboardNav.querySelector('a').textContent = 'Dashboard';
+    // Hide dashboardNav for admin users
+    if (dashboardNav) {
+      if (user.role === 'admin') {
+        dashboardNav.style.display = 'none';
+      } else {
+        dashboardNav.style.display = '';
+        if (user.role === 'employer') {
+          dashboardNav.querySelector('a').setAttribute('href', 'employer-dashboard.html');
+          dashboardNav.querySelector('a').textContent = 'Employer Dashboard';
+        } else {
+          dashboardNav.querySelector('a').setAttribute('href', 'dashboard.html');
+          dashboardNav.querySelector('a').textContent = 'Dashboard';
+        }
+      }
     }
   } else {
     if (loginBtn) loginBtn.style.display = '';
@@ -181,95 +188,20 @@ if (loginForm) {
     setCurrentUser(user);
     closeModal('loginModal');
     updateAuthUI();
-    alert('Login successful!');
+    // No popup on login
+    // Redirect to respective dashboard
+    if (user.role === 'admin') {
+      window.location.href = 'admin.html';
+    } else if (user.role === 'employer') {
+      window.location.href = 'employer-dashboard.html';
+    } else {
+      window.location.href = 'dashboard.html';
+    }
   };
 }
 
 // --- Job Filtering Logic ---
-const jobsData = [
-  {title:'Retail Assistant', company:'Tesco', location:'Manchester', pay:8.5, payDisplay:'£8.50/hr', minAge:16, rating:3.2},
-  {title:'Ice Cream Server', company:'Scoop & Swirl', location:'Brighton', pay:7.0, payDisplay:'£7.00/hr', minAge:13, rating:4.8},
-  {title:'Lifeguard', company:'Splash Leisure Centre', location:'Birmingham', pay:10.5, payDisplay:'£10.50/hr', minAge:18, rating:4.6},
-  {title:'Dog Walker', company:'Happy Paws', location:'Leeds', pay:6.5, payDisplay:'£6.50/hr', minAge:13, rating:4.9},
-  {title:'Barista', company:'Costa Coffee', location:'London', pay:9.0, payDisplay:'£9.00/hr', minAge:16, rating:3.7},
-  {title:'Library Assistant', company:'Manchester City Library', location:'Manchester', pay:7.5, payDisplay:'£7.50/hr', minAge:16, rating:4.5},
-  {title:'Camp Counsellor', company:'SummerFun Camps', location:'Bristol', pay:8.0, payDisplay:'£8.00/hr', minAge:16, rating:4.9},
-  {title:'Shop Assistant', company:'WHSmith', location:'Liverpool', pay:7.8, payDisplay:'£7.80/hr', minAge:16, rating:2.8},
-  {title:'Gardener', company:'GreenThumb', location:'Oxford', pay:8.2, payDisplay:'£8.20/hr', minAge:16, rating:4.2},
-  {title:'Theme Park Attendant', company:'Alton Towers', location:'Staffordshire', pay:9.5, payDisplay:'£9.50/hr', minAge:16, rating:4.7},
-  {title:'Waiter/Waitress', company:'Pizza Express', location:'York', pay:8.0, payDisplay:'£8.00/hr', minAge:16, rating:2.5},
-  {title:'Farm Helper', company:'Sunny Fields', location:'Somerset', pay:7.2, payDisplay:'£7.20/hr', minAge:13, rating:1.8},
-  {title:'Receptionist', company:'Fit4All Gym', location:'Newcastle', pay:8.8, payDisplay:'£8.80/hr', minAge:16, rating:4.0},
-  {title:'Pet Sitter', company:'PetPal', location:'Sheffield', pay:6.8, payDisplay:'£6.80/hr', minAge:13, rating:5.0},
-  {title:'Tour Guide', company:'CityWalks', location:'Edinburgh', pay:10.0, payDisplay:'£10.00/hr', minAge:18, rating:4.4},
-  {title:'Bookshop Assistant', company:'Waterstones', location:'Cambridge', pay:7.9, payDisplay:'£7.90/hr', minAge:16, rating:4.6},
-  {title:'Kitchen Porter', company:'The Green Spoon', location:'Bath', pay:7.5, payDisplay:'£7.50/hr', minAge:16, rating:0.5},
-  {title:'Childcare Assistant', company:'Little Stars Nursery', location:'Cardiff', pay:8.1, payDisplay:'£8.10/hr', minAge:16, rating:3.9},
-  {title:'Warehouse Operative', company:'Amazon', location:'Milton Keynes', pay:9.2, payDisplay:'£9.20/hr', minAge:18, rating:1.2},
-  {title:'Sports Coach', company:'ActiveTeens', location:'Glasgow', pay:10.0, payDisplay:'£10.00/hr', minAge:18, rating:4.8},
-  {title:'Event Helper', company:'City Events', location:'London', pay:8.3, payDisplay:'£8.30/hr', minAge:16, rating:4.3},
-  {title:'Delivery Cyclist', company:'Deliveroo', location:'Bristol', pay:9.0, payDisplay:'£9.00/hr', minAge:16, rating:2.2},
-  {title:'Amusement Arcade Attendant', company:'FunZone', location:'Blackpool', pay:7.6, payDisplay:'£7.60/hr', minAge:16, rating:3.0},
-  {title:'Ice Rink Assistant', company:'WinterWorld', location:'Nottingham', pay:8.4, payDisplay:'£8.40/hr', minAge:16, rating:4.1},
-  {title:'Fruit Picker', company:'BerryBest Farms', location:'Kent', pay:7.1, payDisplay:'£7.10/hr', minAge:13, rating:1.5},
-  {title:'Junior IT Assistant', company:'ByteTech', location:'Reading', pay:9.5, payDisplay:'£9.50/hr', minAge:16, rating:4.7},
-  {title:'Park Cleaner', company:'CleanGreen', location:'Leicester', pay:7.0, payDisplay:'£7.00/hr', minAge:13, rating:0.8},
-  {title:'Junior Photographer', company:'SnapShots', location:'London', pay:8.9, payDisplay:'£8.90/hr', minAge:16, rating:4.9},
-  {title:'Swimming Pool Attendant', company:'AquaCentre', location:'Southampton', pay:8.2, payDisplay:'£8.20/hr', minAge:16, rating:3.6},
-  {title:'Junior Baker', company:'Sweet Treats', location:'Norwich', pay:7.8, payDisplay:'£7.80/hr', minAge:16, rating:3.3},
-  {title:'Car Wash Attendant', company:'ShinyCars', location:'Derby', pay:7.3, payDisplay:'£7.30/hr', minAge:13, rating:1.0},
-  {title:'Junior Barista', company:'Brew Crew', location:'London', pay:8.6, payDisplay:'£8.60/hr', minAge:16, rating:3.8},
-  {title:'Shop Floor Assistant', company:'Primark', location:'Birmingham', pay:7.9, payDisplay:'£7.90/hr', minAge:16, rating:2.7},
-  {title:'Junior Chef', company:'Bella Italia', location:'Glasgow', pay:8.7, payDisplay:'£8.70/hr', minAge:16, rating:2.0},
-  {title:'Ticket Seller', company:'Odeon Cinemas', location:'Liverpool', pay:7.6, payDisplay:'£7.60/hr', minAge:16, rating:3.5},
-  {title:'Junior Web Assistant', company:'WebGen', location:'London', pay:9.1, payDisplay:'£9.10/hr', minAge:16, rating:4.6},
-  {title:'Playground Supervisor', company:'PlaySafe', location:'Newcastle', pay:7.4, payDisplay:'£7.40/hr', minAge:13, rating:3.9},
-  {title:'Junior Cashier', company:"Sainsbury's", location:'London', pay:8.1, payDisplay:'£8.10/hr', minAge:16, rating:2.3},
-  {title:'Junior Waiter', company:"Nando's", location:'Cardiff', pay:7.8, payDisplay:'£7.80/hr', minAge:16, rating:2.9},
-  {title:'Junior Sales Assistant', company:'JD Sports', location:'Manchester', pay:8.2, payDisplay:'£8.20/hr', minAge:16, rating:2.6},
-  {title:'Junior Lifeguard', company:'SwimSafe', location:'Brighton', pay:8.5, payDisplay:'£8.50/hr', minAge:16, rating:4.5},
-  {title:'Junior Receptionist', company:'City Spa', location:'Bath', pay:8.0, payDisplay:'£8.00/hr', minAge:16, rating:3.4},
-  {title:'Junior Event Helper', company:'EventEase', location:'London', pay:8.6, payDisplay:'£8.60/hr', minAge:16, rating:4.2},
-  {title:'Junior Dog Walker', company:'Walkies', location:'Bristol', pay:7.2, payDisplay:'£7.20/hr', minAge:13, rating:4.8},
-  {title:'Junior Shop Assistant', company:'Boots', location:'London', pay:8.3, payDisplay:'£8.30/hr', minAge:16, rating:2.1},
-  {title:'Junior Library Assistant', company:'City Library', location:'Liverpool', pay:7.6, payDisplay:'£7.60/hr', minAge:16, rating:4.4},
-  {title:'Junior Farm Helper', company:'Green Acres', location:'York', pay:7.1, payDisplay:'£7.10/hr', minAge:13, rating:1.2},
-  {title:'Junior Park Cleaner', company:'ParkCare', location:'Sheffield', pay:7.0, payDisplay:'£7.00/hr', minAge:13, rating:0.5},
-  {title:'Junior Kitchen Porter', company:'The Blue Plate', location:'Oxford', pay:7.5, payDisplay:'£7.50/hr', minAge:16, rating:1.7},
-  {title:'Junior Playground Supervisor', company:'PlayMore', location:'Cambridge', pay:7.4, payDisplay:'£7.40/hr', minAge:13, rating:3.6},
-  {title:'Junior Event Helper', company:'EventEase', location:'London', pay:8.6, payDisplay:'£8.60/hr', minAge:16, rating:4.3},
-  // --- Additional jobs for 50+ total ---
-  {title:'Social Media Assistant', company:'InstaTeens', location:'London', pay:8.5, payDisplay:'£8.50/hr', minAge:16, rating:4.7},
-  {title:'Museum Guide', company:'History House', location:'Manchester', pay:7.9, payDisplay:'£7.90/hr', minAge:16, rating:4.3},
-  {title:'Café Server', company:'Bean There', location:'Bristol', pay:7.2, payDisplay:'£7.20/hr', minAge:16, rating:3.5},
-  {title:'Youth Club Helper', company:'Bright Futures', location:'Leeds', pay:6.9, payDisplay:'£6.90/hr', minAge:13, rating:4.6},
-  {title:'Cinema Usher', company:'CineWorld', location:'Liverpool', pay:7.5, payDisplay:'£7.50/hr', minAge:16, rating:3.2},
-  {title:'Dog Grooming Assistant', company:'Paws & Claws', location:'Sheffield', pay:7.0, payDisplay:'£7.00/hr', minAge:13, rating:4.8},
-  {title:'Ice Cream Vendor', company:'Frosty Treats', location:'Brighton', pay:7.1, payDisplay:'£7.10/hr', minAge:13, rating:4.5},
-  {title:'Book Fair Helper', company:'BookFest', location:'Cambridge', pay:7.3, payDisplay:'£7.30/hr', minAge:16, rating:4.2},
-  {title:'Junior Graphic Designer', company:'Pixel Teens', location:'London', pay:9.0, payDisplay:'£9.00/hr', minAge:16, rating:4.9},
-  {title:'Junior Data Entry', company:'QuickInput', location:'Manchester', pay:8.0, payDisplay:'£8.00/hr', minAge:16, rating:3.1},
-  {title:'Junior Lab Assistant', company:'BioTeens', location:'Oxford', pay:8.7, payDisplay:'£8.70/hr', minAge:16, rating:4.4},
-  {title:'Junior Tour Host', company:'CityTours', location:'Edinburgh', pay:8.5, payDisplay:'£8.50/hr', minAge:16, rating:4.6},
-  {title:'Junior Florist', company:'Bloom', location:'Bristol', pay:7.8, payDisplay:'£7.80/hr', minAge:16, rating:4.3},
-  {title:'Junior Event Planner', company:'PlanIt', location:'London', pay:9.2, payDisplay:'£9.20/hr', minAge:16, rating:4.7},
-  {title:'Junior Copywriter', company:'WriteNow', location:'Manchester', pay:8.9, payDisplay:'£8.90/hr', minAge:16, rating:4.5},
-  {title:'Junior Social Worker', company:'Care4Teens', location:'Liverpool', pay:8.2, payDisplay:'£8.20/hr', minAge:18, rating:4.1},
-  {title:'Junior Receptionist', company:'Smile Dental', location:'Leeds', pay:7.7, payDisplay:'£7.70/hr', minAge:16, rating:3.8},
-  {title:'Junior Waiter', company:'Bella Italia', location:'Birmingham', pay:7.9, payDisplay:'£7.90/hr', minAge:16, rating:2.7},
-  {title:'Junior Lifeguard', company:'WavePool', location:'Brighton', pay:8.4, payDisplay:'£8.40/hr', minAge:16, rating:4.2},
-  {title:'Junior Cashier', company:'Co-op', location:'Manchester', pay:7.8, payDisplay:'£7.80/hr', minAge:16, rating:2.9},
-  {title:'Junior Shop Assistant', company:'WHSmith', location:'Oxford', pay:7.6, payDisplay:'£7.60/hr', minAge:16, rating:2.5},
-  {title:'Junior Barista', company:'Starbucks', location:'London', pay:8.7, payDisplay:'£8.70/hr', minAge:16, rating:3.6},
-  {title:'Junior Event Helper', company:'EventEase', location:'Manchester', pay:8.2, payDisplay:'£8.20/hr', minAge:16, rating:4.1},
-  {title:'Junior Dog Walker', company:'Paws Patrol', location:'Liverpool', pay:7.0, payDisplay:'£7.00/hr', minAge:13, rating:4.7},
-  {title:'Junior Library Assistant', company:'City Library', location:'Bristol', pay:7.5, payDisplay:'£7.50/hr', minAge:16, rating:4.2},
-  {title:'Junior Farm Helper', company:'Green Acres', location:'Oxford', pay:7.2, payDisplay:'£7.20/hr', minAge:13, rating:1.5},
-  {title:'Junior Park Cleaner', company:'ParkCare', location:'London', pay:7.0, payDisplay:'£7.00/hr', minAge:13, rating:0.7},
-  {title:'Junior Kitchen Porter', company:'The Blue Plate', location:'Manchester', pay:7.5, payDisplay:'£7.50/hr', minAge:16, rating:1.9},
-  {title:'Junior Playground Supervisor', company:'PlayMore', location:'Cambridge', pay:7.4, payDisplay:'£7.40/hr', minAge:13, rating:3.7},
-  {title:'Junior Event Helper', company:'EventEase', location:'London', pay:8.6, payDisplay:'£8.60/hr', minAge:16, rating:4.3},
-];
+const jobsData = [];
 
 // --- Job Storage Logic ---
 function getAllJobs() {
@@ -292,7 +224,8 @@ function setAllJobs(jobs) {
 
 // --- Employer Dashboard Logic ---
 if (document.getElementById('createJobForm')) {
-  let editingJobIndex = null;
+  window.editingJobIndex = null;
+  let jobToRemoveIdx = null;
   document.getElementById('createJobForm').onsubmit = function(e) {
     e.preventDefault();
     const user = getCurrentUser();
@@ -301,13 +234,17 @@ if (document.getElementById('createJobForm')) {
       return;
     }
     const title = document.getElementById('jobTitle').value.trim();
-    const company = document.getElementById('jobCompany').value.trim();
+    const company = user.company || '';
     const location = document.getElementById('jobLocation').value.trim();
-    const pay = document.getElementById('jobPay').value.trim();
+    let payRaw = document.getElementById('jobPay').value.trim();
+    let payNum = parseFloat(payRaw.replace(/[^\d.]/g, ''));
+    let payDisplay = payRaw.match(/\d/) ? payRaw : '';
+    if (!payDisplay && !isNaN(payNum)) payDisplay = `£${payNum.toFixed(2)}/hr`;
     const minAge = parseInt(document.getElementById('jobMinAge').value);
+    const closingDate = document.getElementById('jobClosingDate').value;
     const description = document.getElementById('jobDescription').value.trim();
-    if (!title || !company || !location || !pay || !minAge || !description) {
-      alert('Please fill in all fields.');
+    if (!title || !company || !location || isNaN(payNum) || !payDisplay || !minAge || !closingDate || !description) {
+      alert('Please fill in all fields with valid values.');
       return;
     }
     let jobs = getAllJobs();
@@ -317,9 +254,10 @@ if (document.getElementById('createJobForm')) {
       job.title = title;
       job.company = company;
       job.location = location;
-      job.pay = parseFloat(pay.replace(/[^\d.]/g, ''));
-      job.payDisplay = pay;
+      job.pay = payNum;
+      job.payDisplay = payDisplay;
       job.minAge = minAge;
+      job.closingDate = closingDate;
       job.description = description;
       job.updatedAt = new Date().toISOString();
       jobs[editingJobIndex] = job;
@@ -329,7 +267,7 @@ if (document.getElementById('createJobForm')) {
       document.getElementById('createJobForm').querySelector('button[type="submit"]').textContent = 'Create Job';
       renderEmployerJobs();
       if (typeof renderJobs === 'function') renderJobs();
-      alert('Job updated!');
+      showJobCreatedModal();
       return;
     }
     // Create new job
@@ -337,20 +275,20 @@ if (document.getElementById('createJobForm')) {
       title,
       company,
       location,
-      pay: parseFloat(pay.replace(/[^\d.]/g, '')),
-      payDisplay: pay,
+      pay: payNum,
+      payDisplay,
       minAge,
+      closingDate,
       description,
       createdBy: user.username,
       createdAt: new Date().toISOString(),
-      rating: null
     };
     jobs.push(newJob);
     setAllJobs(jobs);
     document.getElementById('createJobForm').reset();
     renderEmployerJobs();
     if (typeof renderJobs === 'function') renderJobs();
-    alert('Job created!');
+    showJobCreatedModal();
   };
   function renderEmployerJobs() {
     const user = getCurrentUser();
@@ -363,70 +301,254 @@ if (document.getElementById('createJobForm')) {
       list.innerHTML = '<p style="color:#888;">No job listings yet. Jobs you create will appear here.</p>';
     } else {
       list.innerHTML = myJobs.map(j => `
-        <div class="job-card" style="margin-bottom:1.5em;">
+        <div class="job-card" style="margin-bottom:1.5em; cursor:pointer;${isJobClosed(j) ? 'opacity:0.6;' : ''}" onclick="viewApplicantsForJob(${j._idx})">
           <h3>${j.title}</h3>
           <p><strong>Company:</strong> ${j.company}</p>
           <p><strong>Location:</strong> ${j.location}</p>
           <p><strong>Pay:</strong> ${j.payDisplay}</p>
           <p><strong>Minimum Age:</strong> ${j.minAge}+</p>
+          <p><strong>Closing Date:</strong> ${j.closingDate ? j.closingDate : '<span style=\'color:#aaa\'>(not set)</span>'}${isJobClosed(j) ? ' <span style=\'color:#e74c3c; font-weight:600;\'>(Closed)</span>' : ''}</p>
           <p>${j.description}</p>
           <p style=\"color:#aaa;font-size:0.95em;\">Created: ${new Date(j.createdAt).toLocaleString()}${j.updatedAt ? '<br>Updated: ' + new Date(j.updatedAt).toLocaleString() : ''}</p>
-          <button class='btn' onclick='editEmployerJob(${j._idx})' style='margin-right:0.7em;'>Edit</button>
-          <button class='btn' style='background:#e74c3c; color:#fff;' onclick='deleteEmployerJob(${j._idx})'>Delete</button>
+          <button class='btn' onclick='event.stopPropagation(); window.editEmployerJob(${j._idx})' style='margin-right:0.7em;'>Edit</button>
+          <button class='btn' style='background:#e74c3c; color:#fff;' onclick='event.stopPropagation(); deleteEmployerJob(${j._idx})'>Delete</button>
         </div>
       `).join('');
     }
   }
   window.renderEmployerJobs = renderEmployerJobs;
   renderEmployerJobs();
+
+  // --- Edit Job Logic ---
   window.editEmployerJob = function(idx) {
     const jobs = getAllJobs();
     const job = jobs[idx];
     if (!job) return;
-    document.getElementById('jobTitle').value = job.title;
-    document.getElementById('jobCompany').value = job.company;
-    document.getElementById('jobLocation').value = job.location;
-    document.getElementById('jobPay').value = job.payDisplay;
-    document.getElementById('jobMinAge').value = job.minAge;
-    document.getElementById('jobDescription').value = job.description;
-    editingJobIndex = idx;
-    document.getElementById('createJobForm').querySelector('button[type="submit"]').textContent = 'Update Job';
-    window.scrollTo({top: document.getElementById('createJobForm').getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth'});
+    window.editingJobIndex = idx;
+    document.getElementById('editJobTitle').value = job.title;
+    document.getElementById('editJobCompany').value = job.company;
+    document.getElementById('editJobLocation').value = job.location;
+    document.getElementById('editJobPay').value = job.payDisplay;
+    document.getElementById('editJobMinAge').value = job.minAge;
+    document.getElementById('editJobClosingDate').value = job.closingDate || '';
+    document.getElementById('editJobDescription').value = job.description;
+    document.getElementById('editJobModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
   };
+  // --- Applicants Modal Logic ---
+  window.viewApplicantsForJob = function(idx) {
+    const jobs = getAllJobs();
+    const job = jobs[idx];
+    if (!job) return;
+    // For demo: assume job.applicants is an array of usernames
+    const applicants = job.applicants || [];
+    const users = getUsers();
+    const applicantList = document.getElementById('applicantList');
+    const applicantProfile = document.getElementById('applicantProfile');
+    if (!applicantList || !applicantProfile) return;
+    if (applicants.length === 0) {
+      applicantList.innerHTML = '<li style="color:#888;">No applicants yet.</li>';
+      applicantProfile.innerHTML = '';
+    } else {
+      applicantList.innerHTML = applicants.map((username, i) => {
+        const user = users.find(u => u.username === username);
+        return `<li style='cursor:pointer; padding:0.5em 0.7em; border-radius:8px; background:#fff; box-shadow:0 2px 8px #e3f1fa;' onclick='selectApplicantForJob(${idx},${i})'>${user ? user.name || user.username : username}</li>`;
+      }).join('');
+      window.selectApplicantForJob = function(jobIdx, applicantIdx) {
+        const jobs = getAllJobs();
+        const job = jobs[jobIdx];
+        const applicants = job.applicants || [];
+        const users = getUsers();
+        const username = applicants[applicantIdx];
+        const user = users.find(u => u.username === username);
+        if (!user) {
+          applicantProfile.innerHTML = '<p style="color:#888;">Applicant profile not found.</p>';
+          return;
+        }
+        applicantProfile.innerHTML = `
+          <h3 style='color:#3bb4e5; margin-bottom:0.7em;'>${user.name || user.username}</h3>
+          <p><strong>Username:</strong> ${user.username}</p>
+          <p><strong>Email:</strong> ${user.email}</p>
+          <p><strong>Age:</strong> ${user.age ? user.age : '<span style=\'color:#aaa\'>(not set)</span>'}</p>
+          <p><strong>Location:</strong> ${user.location ? user.location : '<span style=\'color:#aaa\'>(not set)</span>'}</p>
+          <p><strong>About Me:</strong><br>${user.about ? user.about : '<span style=\'color:#aaa\'>(not set)</span>'}</p>
+          <p><strong>Skills:</strong> ${user.skills ? user.skills : '<span style=\'color:#aaa\'>(not set)</span>'}</p>
+          <p><strong>Interests:</strong> ${user.interests ? user.interests : '<span style=\'color:#aaa\'>(not set)</span>'}</p>
+          <p><strong>Education:</strong> ${user.education ? user.education : '<span style=\'color:#aaa\'>(not set)</span>'}</p>
+          <p><strong>Achievements:</strong> ${user.achievements ? user.achievements : '<span style=\'color:#aaa\'>(not set)</span>'}</p>
+        `;
+      };
+      // Show first applicant by default
+      window.selectApplicantForJob(idx, 0);
+    }
+    document.getElementById('viewApplicantsModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  };
+  if (document.getElementById('closeViewApplicantsModal')) {
+    document.getElementById('closeViewApplicantsModal').onclick = function() {
+      document.getElementById('viewApplicantsModal').classList.remove('active');
+      document.body.style.overflow = '';
+    };
+  }
+  // Modal close logic
+  if (document.getElementById('closeEditJobModal')) {
+    document.getElementById('closeEditJobModal').onclick = function() {
+      document.getElementById('editJobModal').classList.remove('active');
+      document.body.style.overflow = '';
+      editingJobIndex = null;
+    };
+  }
+  // Modal form submit logic
+  if (document.getElementById('editJobForm')) {
+    document.getElementById('editJobForm').onsubmit = function(e) {
+      e.preventDefault();
+      const user = getCurrentUser();
+      if (!user || user.role !== 'employer') {
+        alert('Only employers can edit jobs.');
+        return;
+      }
+      const title = document.getElementById('editJobTitle').value.trim();
+      const company = document.getElementById('editJobCompany').value.trim();
+      const location = document.getElementById('editJobLocation').value.trim();
+      const pay = document.getElementById('editJobPay').value.trim();
+      const minAge = parseInt(document.getElementById('editJobMinAge').value);
+      const closingDate = document.getElementById('editJobClosingDate').value;
+      const description = document.getElementById('editJobDescription').value.trim();
+      if (!title || !company || !location || !pay || !minAge || !closingDate || !description) {
+        alert('Please fill in all fields.');
+        return;
+      }
+      let jobs = getAllJobs();
+      if (editingJobIndex !== null) {
+        // Update existing job
+        let job = jobs[editingJobIndex];
+        job.title = title;
+        job.company = company;
+        job.location = location;
+        job.pay = parseFloat(pay.replace(/[^\d.]/g, ''));
+        job.payDisplay = pay;
+        job.minAge = minAge;
+        job.closingDate = closingDate;
+        job.description = description;
+        job.updatedAt = new Date().toISOString();
+        if (!job.createdBy) job.createdBy = user.username; // Ensure createdBy is always set
+        jobs[editingJobIndex] = job;
+        setAllJobs(jobs);
+        editingJobIndex = null;
+        renderEmployerJobs();
+        if (typeof renderJobs === 'function') renderJobs();
+        document.getElementById('editJobModal').classList.remove('active');
+        document.body.style.overflow = '';
+        alert('Job updated!');
+        return;
+      }
+    };
+  }
   window.deleteEmployerJob = function(idx) {
-    if (!confirm('Are you sure you want to delete this job?')) return;
-    let jobs = getAllJobs();
-    jobs.splice(idx, 1);
-    setAllJobs(jobs);
-    renderEmployerJobs();
-    if (typeof renderJobs === 'function') renderJobs();
-    alert('Job deleted.');
+    jobToRemoveIdx = idx;
+    document.getElementById('removeEmployerJobModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
   };
+  if (document.getElementById('closeRemoveEmployerJobModal')) {
+    document.getElementById('closeRemoveEmployerJobModal').onclick = function() {
+      document.getElementById('removeEmployerJobModal').classList.remove('active');
+      document.body.style.overflow = '';
+      jobToRemoveIdx = null;
+    };
+  }
+  if (document.getElementById('cancelRemoveEmployerJobBtn')) {
+    document.getElementById('cancelRemoveEmployerJobBtn').onclick = function() {
+      document.getElementById('removeEmployerJobModal').classList.remove('active');
+      document.body.style.overflow = '';
+      jobToRemoveIdx = null;
+    };
+  }
+  if (document.getElementById('confirmRemoveEmployerJobBtn')) {
+    document.getElementById('confirmRemoveEmployerJobBtn').onclick = function() {
+      if (jobToRemoveIdx !== null) {
+        let jobs = getAllJobs();
+        const removedJob = jobs[jobToRemoveIdx];
+        jobs.splice(jobToRemoveIdx, 1);
+        setAllJobs(jobs);
+        // Remove from all users' appliedJobs
+        let users = getUsers();
+        let changed = false;
+        users.forEach(u => {
+          if (u.appliedJobs) {
+            const before = u.appliedJobs.length;
+            u.appliedJobs = u.appliedJobs.filter(j => !(j.title === removedJob.title && j.company === removedJob.company));
+            if (u.appliedJobs.length !== before) changed = true;
+          }
+        });
+        if (changed) setUsers(users);
+        // Update currentUser if needed
+        let currentUser = getCurrentUser();
+        if (currentUser && currentUser.appliedJobs) {
+          const before = currentUser.appliedJobs.length;
+          currentUser.appliedJobs = currentUser.appliedJobs.filter(j => !(j.title === removedJob.title && j.company === removedJob.company));
+          if (currentUser.appliedJobs.length !== before) setCurrentUser(currentUser);
+        }
+        renderEmployerJobs();
+        if (typeof renderJobs === 'function') renderJobs();
+        // Reload dashboard if on it
+        if (window.location.pathname.endsWith('dashboard.html')) {
+          setTimeout(() => window.location.reload(), 500);
+        }
+      }
+      document.getElementById('removeEmployerJobModal').classList.remove('active');
+      document.body.style.overflow = '';
+      jobToRemoveIdx = null;
+    };
+  }
 }
 
-// --- Patch renderJobs to use all jobs ---
-const origRenderJobs = typeof renderJobs === 'function' ? renderJobs : null;
+// --- Pagination for Jobs Page ---
+let jobsCurrentPage = 1;
+const jobsPerPage = 9;
+function renderJobsPagination(totalJobs) {
+  const pagination = document.getElementById('jobsPagination');
+  if (!pagination) return;
+  const totalPages = Math.ceil(totalJobs / jobsPerPage);
+  if (totalPages <= 1) {
+    pagination.innerHTML = '';
+    return;
+  }
+  let html = '';
+  if (jobsCurrentPage > 1) {
+    html += `<button class='btn' onclick='changeJobsPage(${jobsCurrentPage - 1})'>&laquo; Prev</button>`;
+  }
+  for (let i = 1; i <= totalPages; i++) {
+    html += `<button class='btn${i === jobsCurrentPage ? ' btn-primary' : ''}' onclick='changeJobsPage(${i})'>${i}</button>`;
+  }
+  if (jobsCurrentPage < totalPages) {
+    html += `<button class='btn' onclick='changeJobsPage(${jobsCurrentPage + 1})'>Next &raquo;</button>`;
+  }
+  pagination.innerHTML = html;
+}
+window.changeJobsPage = function(page) {
+  jobsCurrentPage = page;
+  renderJobs();
+};
+// --- Update renderJobs to use pagination ---
 function renderJobs() {
   const jobsGrid = document.getElementById('jobsGrid');
   if (!jobsGrid) return;
   const search = (document.querySelector('.search-input')?.value || '').toLowerCase();
   const age = document.getElementById('ageFilter')?.value;
-  const pay = document.getElementById('payFilter')?.value;
-  const location = document.getElementById('locationFilter')?.value;
+  const minPay = parseFloat(document.getElementById('minPayInput')?.value);
   const sort = document.getElementById('sortFilter')?.value;
 
   let filtered = getAllJobs().filter(job => {
+    if (isJobClosed(job)) return false;
     if (search && !(
       job.title.toLowerCase().includes(search) ||
       job.company.toLowerCase().includes(search) ||
-      job.location.toLowerCase().includes(search)
+      (job.location && job.location.toLowerCase().includes(search))
     )) return false;
     if (age && job.minAge < parseInt(age)) return false;
-    if (location && job.location !== location) return false;
-    if (pay) {
-      if (pay === '5-7' && (job.pay < 5 || job.pay > 7)) return false;
-      if (pay === '8-10' && (job.pay < 8 || job.pay > 10)) return false;
-      if (pay === '10+' && job.pay < 10) return false;
+    if (!isNaN(minPay)) {
+      let payNum = typeof job.pay === 'number' ? job.pay : parseFloat((job.payDisplay||'').replace(/[^\d.]/g, ''));
+      if (isNaN(payNum) || payNum < minPay) return false;
     }
     return true;
   });
@@ -440,12 +562,6 @@ function renderJobs() {
         break;
       case 'alpha-desc':
         filtered.sort((a, b) => b.title.localeCompare(a.title));
-        break;
-      case 'rating-desc':
-        filtered.sort((a, b) => (b.rating || 0) - (a.rating || 0));
-        break;
-      case 'rating-asc':
-        filtered.sort((a, b) => (a.rating || 0) - (b.rating || 0));
         break;
       case 'pay-desc':
         filtered.sort((a, b) => (b.pay || 0) - (a.pay || 0));
@@ -462,57 +578,130 @@ function renderJobs() {
     }
   }
 
+  // Pagination logic
+  const totalJobs = filtered.length;
+  renderJobsPagination(totalJobs);
+  const startIdx = (jobsCurrentPage - 1) * jobsPerPage;
+  const endIdx = startIdx + jobsPerPage;
+  const jobsToShow = filtered.slice(startIdx, endIdx);
+
   const user = getCurrentUser();
-  jobsGrid.innerHTML = filtered.map(job => {
+  jobsGrid.innerHTML = jobsToShow.length > 0 ? jobsToShow.map((job, idx) => {
     let alreadyApplied = false;
     if (user && user.appliedJobs) {
       alreadyApplied = user.appliedJobs.some(j => j.title === job.title && j.company === job.company);
     }
     let buttonHtml = '';
-    if (user) {
+    if (user && user.role === 'admin') {
+      buttonHtml = `<button class="btn btn-apply" style="background:#e74c3c; color:#fff; margin-right:0.7em;" onclick="event.stopPropagation(); window.deleteJobPost('${job.title.replace(/'/g, "&#39;")}', '${job.company.replace(/'/g, "&#39;")}')">Delete</button>`;
+    } else if (user && user.role === 'employer') {
+      buttonHtml = '<button class="btn btn-apply" style="background:#bfc9d1; color:#fff; box-shadow:none; cursor:not-allowed; opacity:0.7;" disabled>Not available for your role</button>';
+    } else if (user) {
       if (alreadyApplied) {
         buttonHtml = '<button class="btn btn-apply" style="background:#bfc9d1; color:#fff; box-shadow:none; cursor:not-allowed; opacity:0.7;" disabled>Already Applied</button>';
       } else {
         buttonHtml = `<button class="btn btn-apply" onclick="requireLoginForApply('${job.title.replace(/'/g,"&#39;")}', '${job.company.replace(/'/g,"&#39;")}', '${job.location.replace(/'/g,"&#39;")}', '${job.payDisplay}')">Apply Now</button>`;
       }
     } else {
-      buttonHtml = `<button class="btn btn-apply" onclick="openApplicationModal('${job.title.replace(/'/g,"&#39;")}', '${job.company.replace(/'/g,"&#39;")}', '${job.location.replace(/'/g,"&#39;")}', '${job.payDisplay}')">Apply Now</button>`;
+      buttonHtml = `<button class="btn btn-apply" onclick="requireLoginForApply('${job.title.replace(/'/g,"&#39;")}', '${job.company.replace(/'/g,"&#39;")}', '${job.location.replace(/'/g,"&#39;")}', '${job.payDisplay}')">Apply Now</button>`;
     }
+    // Use data-job-idx for reliable event delegation
     return `
-      <div class="job-card">
-        <div class="job-rating">${renderStars(job.rating)}</div>
+      <div class="job-card" style="cursor:pointer;" data-job-idx="${jobsToShow.indexOf(job)}">
         <h2>${job.title}</h2>
         <p><strong>Company:</strong> ${job.company}</p>
         <p><strong>Location:</strong> ${job.location}</p>
         <p><strong>Pay:</strong> ${job.payDisplay}</p>
         <p><strong>Minimum Age:</strong> ${job.minAge}+</p>
-        <p>${job.description ? job.description : ''}</p>
+        <p><strong>Closing Date:</strong> ${job.closingDate ? job.closingDate : '<span style=\'color:#aaa\'>(not set)</span>'}</p>
         ${buttonHtml}
       </div>
     `;
-  }).join('');
+  }).join('') : '<div style="text-align:center; color:#888; font-size:1.15em; margin:2.5em 0;">No jobs found matching your search or filters.<br>Try adjusting your search or check back later for new opportunities!</div>';
+  // Store jobsToShow for modal access
+  window._jobsToShow = jobsToShow;
+  // Update filters dynamically
+  updateJobFilters(getAllJobs());
+}
+// Delegated click event for job cards
+const jobsGrid = document.getElementById('jobsGrid');
+if (jobsGrid) {
+  jobsGrid.addEventListener('click', function(e) {
+    const card = e.target.closest('.job-card');
+    if (!card || e.target.classList.contains('btn-apply')) return;
+    const idx = card.getAttribute('data-job-idx');
+    if (window._jobsToShow && window._jobsToShow[idx]) {
+      openJobDescriptionModal(window._jobsToShow[idx]);
+    }
+  });
+}
+window.openJobDescriptionModal = function(job) {
+  document.getElementById('modalJobDescTitle').textContent = job.title;
+  document.getElementById('modalJobDescCompany').textContent = job.company;
+  document.getElementById('modalJobDescText').innerHTML = `
+    <p><strong>Location:</strong> ${job.location}</p>
+    <p><strong>Pay:</strong> ${job.payDisplay}</p>
+    <p><strong>Minimum Age:</strong> ${job.minAge}+</p>
+    <p><strong>Closing Date:</strong> ${job.closingDate ? job.closingDate : '<span style=\'color:#aaa\'>(not set)</span>'}</p>
+    <div style="margin-top:1em; text-align:left;"><strong>Description:</strong><br>${job.description || 'No description provided.'}</div>
+  `;
+  // Render Apply Now button
+  const user = getCurrentUser();
+  let buttonHtml = '';
+  if (user && (user.role === 'employer' || user.role === 'admin')) {
+    buttonHtml = '<button class="btn btn-apply" style="background:#bfc9d1; color:#fff; box-shadow:none; cursor:not-allowed; opacity:0.7;" disabled>Not available for your role</button>';
+  } else if (user) {
+    let alreadyApplied = user.appliedJobs && user.appliedJobs.some(j => j.title === job.title && j.company === job.company);
+    if (alreadyApplied) {
+      buttonHtml = '<button class="btn btn-apply" style="background:#bfc9d1; color:#fff; box-shadow:none; cursor:not-allowed; opacity:0.7;" disabled>Already Applied</button>';
+    } else {
+      buttonHtml = `<button class="btn btn-apply" id="modalApplyBtn">Apply Now</button>`;
+    }
+  } else {
+    buttonHtml = `<button class="btn btn-apply" id="modalApplyBtn">Apply Now</button>`;
+  }
+  document.getElementById('modalJobDescApplyBtn').innerHTML = buttonHtml;
+  // Add event for Apply Now
+  const applyBtn = document.getElementById('modalApplyBtn');
+  if (applyBtn) {
+    applyBtn.onclick = function() {
+      requireLoginForApply(job.title, job.company, job.location, job.payDisplay);
+      closeJobDescriptionModal();
+    };
+  }
+  document.getElementById('jobDescriptionModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeJobDescriptionModal() {
+  document.getElementById('jobDescriptionModal').classList.remove('active');
+  document.body.style.overflow = '';
+}
+if (document.getElementById('closeJobDescriptionModal')) {
+  document.getElementById('closeJobDescriptionModal').onclick = closeJobDescriptionModal;
+}
+if (document.getElementById('closeJobDescriptionBtn')) {
+  document.getElementById('closeJobDescriptionBtn').onclick = closeJobDescriptionModal;
 }
 
-function renderStars(rating) {
-  if (!rating) return '';
-  const full = Math.floor(rating);
-  const half = rating % 1 >= 0.5 ? 1 : 0;
-  let stars = '';
-  for (let i = 0; i < full; i++) stars += '★';
-  if (half) stars += '⯪'; // Unicode left half black star (U+2BEA)
-  for (let i = full + half; i < 5; i++) stars += '☆';
-  // If half, replace the first empty star after the half with an empty outline (so half+empty = 1 star visually)
-  if (half && stars.length < 5) {
-    stars = stars.slice(0, full + 1) + '☆' + stars.slice(full + 1);
-    stars = stars.slice(0, 5); // Ensure only 5 symbols
-  }
-  return `<span class='stars'>${stars}</span>`;
+function showApplicationSuccessModal() {
+  document.getElementById('applicationSuccessModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeApplicationSuccessModal() {
+  document.getElementById('applicationSuccessModal').classList.remove('active');
+  document.body.style.overflow = '';
+}
+// Add event listeners for modal close
+if (document.getElementById('closeApplicationSuccessModal')) {
+  document.getElementById('closeApplicationSuccessModal').onclick = closeApplicationSuccessModal;
+}
+if (document.getElementById('closeApplicationSuccessBtn')) {
+  document.getElementById('closeApplicationSuccessBtn').onclick = closeApplicationSuccessModal;
 }
 
 function requireLoginForApply(jobTitle, company, location, pay) {
   const user = getCurrentUser();
   if (!user) {
-    alert('Please log in to apply for jobs.');
     if (typeof showModal === 'function') showModal('loginModal');
     return;
   }
@@ -524,9 +713,26 @@ function requireLoginForApply(jobTitle, company, location, pay) {
       users[idx].appliedJobs.push({ title: jobTitle, company, location, pay, date: new Date().toISOString() });
       setUsers(users);
       setCurrentUser(users[idx]);
-      alert('Application submitted!');
+      // --- Add applicant to job's applicants array ---
+      let jobs = getAllJobs();
+      let jobIdx = jobs.findIndex(j => j.title === jobTitle && j.company === company);
+      if (jobIdx !== -1) {
+        if (!jobs[jobIdx].applicants) jobs[jobIdx].applicants = [];
+        if (!jobs[jobIdx].applicants.includes(user.username)) {
+          jobs[jobIdx].applicants.push(user.username);
+          setAllJobs(jobs);
+        }
+      }
+      showApplicationSuccessModal();
       if (typeof renderJobs === 'function') renderJobs();
       if (typeof updateBestRatedJobButtons === 'function') updateBestRatedJobButtons();
+      // Force dashboard reload if on dashboard page
+      if (window.location.pathname.endsWith('dashboard.html')) {
+        setTimeout(() => window.location.reload(), 500);
+      }
+      if (window.location.pathname.endsWith('employer-dashboard.html')) {
+        setTimeout(() => window.location.reload(), 500);
+      }
     } else {
       alert('You have already applied for this job.');
     }
@@ -537,8 +743,7 @@ if (document.getElementById('jobsGrid')) {
   renderJobs();
   document.querySelector('.search-input').addEventListener('input', renderJobs);
   document.getElementById('ageFilter').addEventListener('change', renderJobs);
-  document.getElementById('payFilter').addEventListener('change', renderJobs);
-  document.getElementById('locationFilter').addEventListener('change', renderJobs);
+  document.getElementById('minPayInput').addEventListener('input', renderJobs);
   const sortFilter = document.getElementById('sortFilter');
   if (sortFilter) sortFilter.addEventListener('change', renderJobs);
 } 
@@ -615,3 +820,82 @@ if (document.getElementById('jobsGrid')) {
   showSlide(0);
   resetAutoSlide();
 })(); 
+
+function showJobCreatedModal() {
+  document.getElementById('jobCreatedModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeJobCreatedModal() {
+  document.getElementById('jobCreatedModal').classList.remove('active');
+  document.body.style.overflow = '';
+}
+if (document.getElementById('closeJobCreatedModal')) {
+  document.getElementById('closeJobCreatedModal').onclick = closeJobCreatedModal;
+}
+if (document.getElementById('closeJobCreatedBtn')) {
+  document.getElementById('closeJobCreatedBtn').onclick = closeJobCreatedModal;
+} 
+
+function updateJobFilters(jobs) {} 
+
+let adminDeleteJob = null;
+window.deleteJobPost = function(title, company) {
+  adminDeleteJob = { title, company };
+  document.getElementById('adminDeleteJobModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+};
+function closeAdminDeleteJobModal() {
+  document.getElementById('adminDeleteJobModal').classList.remove('active');
+  document.body.style.overflow = '';
+  adminDeleteJob = null;
+}
+if (document.getElementById('closeAdminDeleteJobModal')) {
+  document.getElementById('closeAdminDeleteJobModal').onclick = closeAdminDeleteJobModal;
+}
+if (document.getElementById('cancelAdminDeleteJobBtn')) {
+  document.getElementById('cancelAdminDeleteJobBtn').onclick = closeAdminDeleteJobModal;
+}
+if (document.getElementById('confirmAdminDeleteJobBtn')) {
+  document.getElementById('confirmAdminDeleteJobBtn').onclick = function() {
+    if (!adminDeleteJob) return;
+    let jobs = getAllJobs();
+    let idx = jobs.findIndex(j => j.title === adminDeleteJob.title && j.company === adminDeleteJob.company);
+    if (idx !== -1) {
+      const removedJob = jobs[idx];
+      jobs.splice(idx, 1);
+      setAllJobs(jobs);
+      // Remove from all users' appliedJobs
+      let users = getUsers();
+      let changed = false;
+      users.forEach(u => {
+        if (u.appliedJobs) {
+          const before = u.appliedJobs.length;
+          u.appliedJobs = u.appliedJobs.filter(j => !(j.title === removedJob.title && j.company === removedJob.company));
+          if (u.appliedJobs.length !== before) changed = true;
+        }
+      });
+      if (changed) setUsers(users);
+      // Update currentUser if needed
+      let currentUser = getCurrentUser();
+      if (currentUser && currentUser.appliedJobs) {
+        const before = currentUser.appliedJobs.length;
+        currentUser.appliedJobs = currentUser.appliedJobs.filter(j => !(j.title === removedJob.title && j.company === removedJob.company));
+        if (currentUser.appliedJobs.length !== before) setCurrentUser(currentUser);
+      }
+      renderJobs();
+      // Reload dashboard if on it
+      if (window.location.pathname.endsWith('dashboard.html')) {
+        setTimeout(() => window.location.reload(), 500);
+      }
+    }
+    closeAdminDeleteJobModal();
+  };
+} 
+
+function isJobClosed(job) {
+  if (!job.closingDate) return false;
+  const today = new Date();
+  const closing = new Date(job.closingDate);
+  closing.setHours(23,59,59,999); // include the whole closing day
+  return closing < today;
+} 
